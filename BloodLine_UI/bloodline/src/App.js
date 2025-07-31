@@ -11,6 +11,9 @@ import DonorLogin from './DonorLogin';
 import RegisterDonor from './RegisterDonor';
 import ReceiverLogin from './ReceiverLogin';
 import RegisterReceiver from './RegisterReceiver'; // ✅ New import
+import AboutBloodDonation from './AboutBloodDonation';
+import BloodCenterLogin from './BloodCenterLogin';
+import SystemAccessLogin from './SystemAccessLogin';
 
 function App() {
   return (
@@ -42,6 +45,14 @@ function App() {
 
         {/* ✅ Receiver Registration Page */}
         <Route path="/register-receiver" element={<RegisterReceiver />} />
+
+        {/*About blood donation*/}
+        <Route path="/about-donation" element={<AboutBloodDonation/>} />
+
+        <Route path="/center-login" element={<BloodCenterLogin/>} />
+
+        <Route path="/admin" element={<SystemAccessLogin />} />
+
       </Routes>
 
       <Footer />

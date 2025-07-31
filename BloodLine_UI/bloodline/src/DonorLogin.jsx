@@ -18,7 +18,7 @@ const DonorLogin = () => {
   };
 
   return (
-    <div style={{ marginTop: '100px', marginBottom: '80px' }}>
+    <div style={{ marginTop: '120px', marginBottom: '80px' }}>
       <Container>
         <Row className="justify-content-center">
           <Col md={10}>

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 function ReceiverLogin() {
   return (
      <div className="mt-5 pt-5">
-    <Container className="my-5" style={{ marginTop: '100px' }}>
+    <Container className="my-5" style={{ marginTop: '100px' , marginBottom: '80px' }}>
       <Row className="justify-content-center">
         <Col md={8}>
           <Card className="border border-danger shadow-lg">
