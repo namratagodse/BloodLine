@@ -1,11 +1,16 @@
-// src/components/CustomNavbar.js
 import React from 'react';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 function CustomNavbar() {
   return (
-    <Navbar expand="lg" style={{ backgroundColor: '#9B1C2E' }} variant="dark" className="border-bottom border-warning shadow-sm">
+    <Navbar
+      expand="lg"
+      fixed="top"  
+      style={{ backgroundColor: '#9B1C2E' }}
+      variant="dark"
+      className="border-bottom border-warning shadow-sm"
+    >
       <Container>
         <Navbar.Brand as={Link} to="/" className="fw-bold fs-4">
           BloodLine
