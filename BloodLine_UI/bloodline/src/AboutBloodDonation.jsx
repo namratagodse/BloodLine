@@ -1,98 +1,96 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
+
+const donationSlides = [
+  {
+    title: 'Why Donate Blood?',
+    content: `Blood donation is a noble act that helps save lives. Donated blood is used during surgeries,
+    trauma care, cancer treatments, and for patients with blood disorders. Regular blood donation also
+    has health benefits for the donor, such as improved iron regulation and stimulation of new blood cell production.`,
+    background: '/images/donate1.jpeg',
+  },
+  {
+    title: 'Who Can Donate?',
+    content: `• Age between 18–65 years
+• Minimum weight of 45 kg
+• Healthy and not suffering from any major illness
+• Minimum 90 days gap between donations (males), 120 days (females)`,
+    background: '/images/donate3.webp',
+  },
+  {
+    title: 'Types of Blood Donation',
+    content: `• Whole Blood: Standard donation, contains all components.
+• Platelet Donation: For cancer patients, extracted using apheresis.
+• Plasma Donation: Used for burn and trauma victims.
+• Double Red Cells: Two units of red cells collected, longer recovery time.`,
+    background: '/images/donate2.png',
+  },
+  {
+    title: 'Blood Compatibility',
+    content: `O− ➜ All | Receives from: O−
+O+ ➜ O+, A+, B+, AB+ | Receives from: O+, O−
+A− ➜ A+, A−, AB+, AB− | Receives from: A−, O−
+A+ ➜ A+, AB+ | Receives from: A+, A−, O+, O−
+B− ➜ B+, B−, AB+, AB− | Receives from: B−, O−
+B+ ➜ B+, AB+ | Receives from: B+, B−, O+, O−
+AB− ➜ AB+, AB− | Receives from: A−, B−, AB−, O−
+AB+ ➜ AB+ | Receives from: All`,
+    background: '/images/donate4.jpeg',
+  },
+  {
+    title: 'How the Donation Works',
+    content: `1. Donor registration and basic health check-up
+2. Blood donation (typically 15-20 minutes)
+3. Refreshment and rest
+4. Blood testing and component separation
+5. Storage and availability in blood bank`,
+    background: '/images/donate5.jpeg',
+  },
+];
 
 function AboutBloodDonation() {
   return (
-    <div style={{ marginTop: '90px', paddingBottom: '30px' }}>
-      <Container>
-        {/* Header */}
-        <Row className="mb-4">
-          <Col>
-            <h1 className="text-center text-danger fw-bold">About Blood Donation</h1>
-            <p className="text-center text-muted">“A single pint can save three lives, a single gesture can create a million smiles.”</p>
-          </Col>
-        </Row>
-
-        {/* Why Donate */}
-        <Row className="mb-5">
-          <Col>
-            <h3 className="text-danger">Why Donate Blood?</h3>
-            <p>
-              Blood donation is a noble act that helps save lives. Donated blood is used during surgeries,
-              trauma care, cancer treatments, and for patients with blood disorders. Regular blood donation also
-              has health benefits for the donor, such as improved iron regulation and stimulation of new blood cell production.
-            </p>
-          </Col>
-        </Row>
-
-        {/* Eligibility */}
-        <Row className="mb-5">
-          <Col>
-            <h3 className="text-danger">Who Can Donate?</h3>
-            <ul>
-              <li>Age between 18–65 years</li>
-              <li>Minimum weight of 45 kg</li>
-              <li>Healthy and not suffering from any major illness</li>
-              <li>Minimum 90 days gap between donations (males), 120 days (females)</li>
-            </ul>
-          </Col>
-        </Row>
-
-        {/* Types of Donations */}
-        <Row className="mb-5">
-          <Col>
-            <h3 className="text-danger">Types of Blood Donation</h3>
-            <ul>
-              <li><strong>Whole Blood:</strong> Standard donation, contains all components.</li>
-              <li><strong>Platelet Donation:</strong> For cancer patients, extracted using apheresis.</li>
-              <li><strong>Plasma Donation:</strong> Used for burn and trauma victims.</li>
-              <li><strong>Double Red Cells:</strong> Two units of red cells collected, longer recovery time.</li>
-            </ul>
-          </Col>
-        </Row>
-
-        {/* Compatibility Chart */}
-        <Row className="mb-5">
-          <Col>
-            <h3 className="text-danger">Blood Compatibility</h3>
-            <div className="table-responsive">
-              <table className="table table-bordered text-center">
-                <thead className="table-danger">
-                  <tr>
-                    <th>Blood Group</th>
-                    <th>Can Donate To</th>
-                    <th>Can Receive From</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>O−</td><td>All</td><td>O−</td></tr>
-                  <tr><td>O+</td><td>O+, A+, B+, AB+</td><td>O+, O−</td></tr>
-                  <tr><td>A−</td><td>A+, A−, AB+, AB−</td><td>A−, O−</td></tr>
-                  <tr><td>A+</td><td>A+, AB+</td><td>A+, A−, O+, O−</td></tr>
-                  <tr><td>B−</td><td>B+, B−, AB+, AB−</td><td>B−, O−</td></tr>
-                  <tr><td>B+</td><td>B+, AB+</td><td>B+, B−, O+, O−</td></tr>
-                  <tr><td>AB−</td><td>AB+, AB−</td><td>A−, B−, AB−, O−</td></tr>
-                  <tr><td>AB+</td><td>AB+</td><td>All</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Donation Process */}
-        <Row>
-          <Col>
-            <h3 className="text-danger">How the Donation Works</h3>
-            <ol>
-              <li>Donor registration and basic health check-up</li>
-              <li>Blood donation (typically 15-20 minutes)</li>
-              <li>Refreshment and rest</li>
-              <li>Blood testing and component separation</li>
-              <li>Storage and availability in blood bank</li>
-            </ol>
-          </Col>
-        </Row>
-      </Container>
+    <div style={{ marginTop: '60px', fontFamily: '"Times New Roman", Times, serif' }}>
+      {donationSlides.map((slide, index) => (
+        <div
+          key={index}
+          style={{
+            minHeight: '100vh',
+            backgroundImage: `url(${slide.background})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '30px'
+          }}
+        >
+          <Container>
+            <h1 
+              className="fw-bold mb-2" 
+              style={{ fontSize: '3.5rem', borderBottom: '2px solid white', paddingBottom: '10px', fontFamily: '"Times New Roman", Times, serif' }}
+            >
+              {slide.title}
+            </h1>
+            <pre 
+              style={{ 
+                fontSize: '1.4rem', 
+                whiteSpace: 'pre-wrap', 
+                backgroundColor: 'rgba(0,0,0,0.5)', 
+                padding: '20px', 
+                borderRadius: '10px', 
+                border: '2px solid white', 
+                fontWeight: 'bold', 
+                fontFamily: '"Times New Roman", Times, serif' 
+              }}
+            >
+              {slide.content}
+            </pre>
+          </Container>
+        </div>
+      ))}
     </div>
   );
 }
