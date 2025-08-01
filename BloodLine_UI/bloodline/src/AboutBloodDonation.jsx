@@ -3,38 +3,57 @@ import { Container } from 'react-bootstrap';
 
 const donationSlides = [
   {
-    title: 'Why Donate Blood?',
-    content: `Blood donation is a noble act that helps save lives. Donated blood is used during surgeries,
-    trauma care, cancer treatments, and for patients with blood disorders. Regular blood donation also
-    has health benefits for the donor, such as improved iron regulation and stimulation of new blood cell production.`,
+    title: 'Who Can Donate?',
+    content: `• You must be between 18 to 65 years of age.
+• Your body weight should be at least 45 kg.
+• You should be healthy and not suffering from any major illness.
+• Hemoglobin level must be at least 12.5 g/dL.
+• Your pulse and blood pressure should be normal.
+• There must be a minimum gap of 3 months (males) or 4 months (females) between donations.
+• You should not have consumed alcohol in the last 24 hours.
+• You should have had a light meal and proper sleep before donating.
+• Women should not donate during pregnancy or while breastfeeding.
+• Avoid donation for 6–12 months if you’ve recently had a tattoo or piercing.
+• Avoid donation if you are taking antibiotics or are recovering from an infection.`,
     background: '/images/donate1.jpeg',
   },
   {
-    title: 'Who Can Donate?',
-    content: `• Age between 18–65 years
-• Minimum weight of 45 kg
-• Healthy and not suffering from any major illness
-• Minimum 90 days gap between donations (males), 120 days (females)`,
+    title: 'Stats about Blood?',
+    content: `#According to a 2012 World Health Organisation (WHO) report, only nine million units are collected annually, while the need is for 12 million units.
+
+# Delhi NCR alone faces a shortage of 100,000 units per year.
+
+# The shelf-life of donated blood is 35 to 42 days. There is a constant need to replenish stocks in our blood banks.
+
+# Healthy donors are between the age of 18 to 65 years.
+
+# Statistics show that there are 234 million major operations in India, 63 million trauma-induced surgeries, 31 million cancer-related procedures and 10 million pregnancy related complications which require blood transfusions.`,
     background: '/images/donate3.webp',
   },
   {
-    title: 'Types of Blood Donation',
-    content: `• Whole Blood: Standard donation, contains all components.
-• Platelet Donation: For cancer patients, extracted using apheresis.
-• Plasma Donation: Used for burn and trauma victims.
-• Double Red Cells: Two units of red cells collected, longer recovery time.`,
+    title: 'Facts About Blood',
+    content: `# One unit of donated blood can save up to three lives.
+
+# You can donate blood every three months. It only takes 48 hours for your body fluids to be completely replenished.
+
+# Scientists have estimated the volume of blood in the human body to be eight percent of body weight.
+
+# There are 100,000 miles of blood vessels in an adult human body.
+
+# A red blood cell can make a complete circuit of your body in 30 seconds.
+
+# White blood cells make up about 1% of your blood.`,
     background: '/images/donate2.png',
   },
   {
-    title: 'Blood Compatibility',
-    content: `O− ➜ All | Receives from: O−
-O+ ➜ O+, A+, B+, AB+ | Receives from: O+, O−
-A− ➜ A+, A−, AB+, AB− | Receives from: A−, O−
-A+ ➜ A+, AB+ | Receives from: A+, A−, O+, O−
-B− ➜ B+, B−, AB+, AB− | Receives from: B−, O−
-B+ ➜ B+, AB+ | Receives from: B+, B−, O+, O−
-AB− ➜ AB+, AB− | Receives from: A−, B−, AB−, O−
-AB+ ➜ AB+ | Receives from: All`,
+    title: 'Benefits of Donating Blood',
+    content: `Less likely to suffer diseases
+
+# Did you know that people who donate blood are 88% less likely to suffer a heart attack and 33% less likely to acquire any type of cardiovascular disease.
+
+# When you donate blood, it removes 225 to 250 milligrams of iron from your body, hence reducing the risk of heart disease.
+
+# Blood Center performs numerous tests on the donate.Therefore regular blood donation helps in sheilding you from serious diseases.`,
     background: '/images/donate4.jpeg',
   },
   {
