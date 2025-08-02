@@ -42,5 +42,37 @@ namespace BloodLine_Backend.BAL
                 cmd.ExecuteNonQuery();
             }
         }
+
+        // ✅ New LoginUser method added
+        public UserModel LoginUser(string email, string passwordHash)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_LoginUser", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
+
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new UserModel
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            FullName = reader["FullName"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Role = reader["Role"].ToString(),
+                            IsActive = true
+                        };
+                    }
+                }
+            }
+
+            return null; // Invalid login
+        }
     }
 }
