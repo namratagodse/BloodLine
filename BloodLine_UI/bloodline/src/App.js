@@ -1,19 +1,19 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CustomNavbar from './NavBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Footer from './Footer';
-import MainContent from './MainContent';
-import DonationInfo from './DonationInfo';
-import SliderCards from './SliderCards';
-import DonationSteps from './DonationSteps';
-import DonorLogin from './DonorLogin';
-import RegisterDonor from './RegisterDonor';
-import ReceiverLogin from './ReceiverLogin';
-import RegisterReceiver from './RegisterReceiver'; // ✅ New import
-import AboutBloodDonation from './AboutBloodDonation';
-import BloodCenterLogin from './BloodCenterLogin';
-import SystemAccessLogin from './SystemAccessLogin';
+
+// Components
+import CustomNavbar from './components/NavBar';
+import Footer from './components/Footer';
+import MainContent from './pages/Home/MainContent';
+import DonationInfo from './pages/Home/DonationInfo';
+import SliderCards from './pages/Home/SliderCards';
+import DonationSteps from './pages/Home/DonationSteps';
+import Register from './pages/Register';
+import AboutBloodDonation from './pages/AboutBloodDonation';
+import Login from './pages/Login';
+import AdminHome from './pages/Admin/AdminHome';
+ 
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
       <CustomNavbar />
 
       <Routes>
-        {/* Homepage */}
+        {/* Home Page */}
         <Route
           path="/"
           element={
@@ -34,25 +34,17 @@ function App() {
           }
         />
 
-        {/* Donor Login Page */}
-        <Route path="/donor-login" element={<DonorLogin />} />
-
         {/* Donor Registration Page */}
-        <Route path="/register-donor" element={<RegisterDonor />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* Receiver Login Page */}
-        <Route path="/receiver-login" element={<ReceiverLogin />} />
+        {/* About Blood Donation Page */}
+        <Route path="/about-blood-donation" element={<AboutBloodDonation />} />
 
-        {/* ✅ Receiver Registration Page */}
-        <Route path="/register-receiver" element={<RegisterReceiver />} />
+        {/* Donor/Receiver Login Page */}
+        <Route path="/login" element={<Login />} />
 
-        {/*About blood donation*/}
-        <Route path="/about-donation" element={<AboutBloodDonation/>} />
-
-        <Route path="/center-login" element={<BloodCenterLogin/>} />
-
-        <Route path="/admin" element={<SystemAccessLogin />} />
-
+        {/* Admin Dashboard Page */}
+        <Route path="/admin-dashboard" element={<AdminHome />} />
       </Routes>
 
       <Footer />
