@@ -1,6 +1,8 @@
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
-
+import { registerUser } from '../Services/RegisterService';
 function Register() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -16,11 +18,12 @@ function Register() {
     pincode: '',
     password: '',
     confirmPassword: '',
-    role: '', // New field
+    role: '',
   });
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -45,7 +48,7 @@ function Register() {
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
     if (!formData.bloodGroup) newErrors.bloodGroup = 'Blood Group is required';
-    if (!formData.role) newErrors.role = 'Role is required'; // Role validation
+    if (!formData.role) newErrors.role = 'Role is required';
     if (!formData.password || !passwordRegex.test(formData.password)) {
       newErrors.password = 'Password must contain a capital letter, number, and special character';
     }
@@ -58,7 +61,6 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData({ ...formData, [name]: value });
 
     if (name === 'state') {
@@ -68,17 +70,36 @@ function Register() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formValidationErrors = validateForm();
 
-    if (Object.keys(formValidationErrors).length === 0) {
-      console.log('Form Submitted', formData);
-      setSubmitted(true);
-      setErrors({});
+     if (Object.keys(formValidationErrors).length === 0) {
+      try {
+        await registerUser(formData);
+        toast.success('Registration Successful!');
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          gender: '',
+          dob: '',
+          bloodGroup: '',
+          address: '',
+          state: '',
+          district: '',
+          city: '',
+          pincode: '',
+          password: '',
+          confirmPassword: '',
+          role: '',
+        });
+        setErrors({});
+      } catch (error) {
+        toast.error(error.message || 'Registration failed');
+      }
     } else {
       setErrors(formValidationErrors);
-      setSubmitted(false);
     }
   };
 
@@ -88,21 +109,21 @@ function Register() {
         <Row className="justify-content-center">
           <Col md={8} lg={7}>
             <div className="border rounded p-4 shadow">
-            <h3 className="text-start mb-4 text-danger fw-bold">Registration</h3>
+              <h3 className="text-start mb-4 text-danger fw-bold">Registration</h3>
               {submitted && <Alert variant="success">Registration Successful!</Alert>}
+              {apiError && <Alert variant="danger">{apiError}</Alert>}
 
               <Form onSubmit={handleSubmit}>
                 <Row>
-                    {/* New Role Dropdown */}
-                <Form.Group className="mb-4">
-                  <Form.Label>Role*</Form.Label>
-                  <Form.Select name="role" value={formData.role} onChange={handleChange} isInvalid={!!errors.role}>
-                    <option value="">-- Select Role --</option>
-                    <option value="Donor">Donor</option>
-                    <option value="Receiver">Receiver</option>
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
-                </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Label>Role*</Form.Label>
+                    <Form.Select name="role" value={formData.role} onChange={handleChange} isInvalid={!!errors.role}>
+                      <option value="">-- Select Role --</option>
+                      <option value="Donor">Donor</option>
+                      <option value="Receiver">Receiver</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
+                  </Form.Group>
 
                   <Col md={6}>
                     <Form.Group className="mb-3">
@@ -246,7 +267,6 @@ function Register() {
                   />
                   <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
                 </Form.Group>
-
 
                 <div className="text-center">
                   <Button type="submit" variant="danger">Register</Button>

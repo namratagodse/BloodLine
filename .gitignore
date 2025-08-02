@@ -1,0 +1,28 @@
+# Node (React)
+node_modules/
+build/
+.env
+*.log
+
+# VSCode & OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Visual Studio cache
+.vs/
+
+# SQL backups and temp files
+Database/*.bak
+Database/*.mdf
+Database/*.ldf
+
+# Ignore IDE-specific files
+*.idea/
+*.iml

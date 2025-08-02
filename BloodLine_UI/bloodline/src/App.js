@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Components
 import CustomNavbar from './components/NavBar';
@@ -13,7 +15,6 @@ import Register from './pages/Register';
 import AboutBloodDonation from './pages/AboutBloodDonation';
 import Login from './pages/Login';
 import AdminHome from './pages/Admin/AdminHome';
- 
 
 function App() {
   return (
@@ -46,6 +47,19 @@ function App() {
         {/* Admin Dashboard Page */}
         <Route path="/admin-dashboard" element={<AdminHome />} />
       </Routes>
+
+      {/* Global Toast Notification */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
 
       <Footer />
     </BrowserRouter>
