@@ -1,7 +1,33 @@
 import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 function AdminDashboard({ stats, onLogout }) {
+  const navigate = useNavigate();
+
+  // Updated colors to remove blue tones
+  const dashboardCards = [
+    { title: 'Feedbacks', value: stats.feedbackCount, route: '/admin/feedbacks', color: 'secondary' },
+    { title: 'Donors', value: stats.donorCount, route: '/admin/donors', color: 'success' },
+    { title: 'Receivers', value: stats.receiverCount, route: '/admin/receivers', color: 'warning' },
+    { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin/blood-banks', color: 'danger' },
+    { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin/blood-inventory', color: 'dark' },
+  ];
+
+  const handleCardClick = (route) => {
+    navigate(route);
+  };
+
+  const cardStyle = {
+    cursor: 'pointer',
+    height: '160px',
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  };
+
   return (
     <div>
       {/* Top Bar */}
@@ -13,46 +39,20 @@ function AdminDashboard({ stats, onLogout }) {
       {/* Stats Section */}
       <Container className="mt-4">
         <Row className="g-4">
-          <Col md={4}>
-            <Card className="text-center shadow">
-              <Card.Body>
-                <Card.Title>Feedbacks</Card.Title>
-                <h2>{stats.feedbackCount}</h2>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card className="text-center shadow">
-              <Card.Body>
-                <Card.Title>Donors</Card.Title>
-                <h2>{stats.donorCount}</h2>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4}>
-            <Card className="text-center shadow">
-              <Card.Body>
-                <Card.Title>Receivers</Card.Title>
-                <h2>{stats.receiverCount}</h2>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card className="text-center shadow">
-              <Card.Body>
-                <Card.Title>Blood Banks</Card.Title>
-                <h2>{stats.bloodBankCount}</h2>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card className="text-center shadow">
-              <Card.Body>
-                <Card.Title>Blood Inventory Units</Card.Title>
-                <h2>{stats.bloodInventoryCount}</h2>
-              </Card.Body>
-            </Card>
-          </Col>
+          {dashboardCards.map((card, index) => (
+            <Col md={4} key={index}>
+              <Card
+                className={`text-center shadow bg-${card.color}`}
+                style={cardStyle}
+                onClick={() => handleCardClick(card.route)}
+              >
+                <Card.Body>
+                  <Card.Title className="fs-5">{card.title}</Card.Title>
+                  <h2 className="fw-bold">{card.value}</h2>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
       </Container>
     </div>

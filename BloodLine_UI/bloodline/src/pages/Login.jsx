@@ -1,22 +1,44 @@
 import React, { useState } from 'react';
-import { Container, Form, Button, Card, Alert } from 'react-bootstrap';
+import { Container, Form, Button, Card } from 'react-bootstrap';
 import { loginUser } from '../Services/LoginService';
 import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const data = await loginUser(email, password);
-      toast.success("Login successful!");
-      // redirect or store token etc.
+
+      if (data && data.token) {
+        localStorage.setItem("token", data.token);
+        toast.success("Login successful!");
+
+        // 👇 Decode token to get role
+        const decoded = jwtDecode(data.token);
+        const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+        // 👇 Navigate based on role
+        if (role === 'Admin') {
+            navigate("/admin-dashboard");
+          } else if (role === 'Donor') {
+            navigate("/donor-dashboard");
+          } else if (role === 'Receiver') {
+            navigate("/receiver-dashboard");
+          } else {
+             toast.error("Unknown user role.");
+          }
+      } else {
+        toast.error("Login failed: No token received.");
+      }
+
     } catch (error) {
-      toast.error(error); // error is already a readable string
+      toast.error(error?.response?.data?.message || "Login failed.");
     }
   };
 
@@ -26,8 +48,6 @@ function Login() {
         <Card className="shadow-lg">
           <Card.Body>
             <h3 className="text-center text-danger mb-4">Login</h3>
-            {error && <Alert variant="danger">{error}</Alert>}
-            {success && <Alert variant="success">{success}</Alert>}
             <Form onSubmit={handleLogin}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address<span className="text-danger">*</span></Form.Label>
