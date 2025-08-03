@@ -1,11 +1,16 @@
+// src/pages/Admin/AdminDashboard.jsx
 import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-function AdminDashboard({ stats, onLogout }) {
+function AdminDashboard({ stats }) {
   const navigate = useNavigate();
 
-  // Updated colors to remove blue tones
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/'); // Redirect to home
+  };
+
   const dashboardCards = [
     { title: 'Feedbacks', value: stats.feedbackCount, route: '/admin/feedbacks', color: 'secondary' },
     { title: 'Donors', value: stats.donorCount, route: '/admin/donors', color: 'success' },
@@ -33,7 +38,7 @@ function AdminDashboard({ stats, onLogout }) {
       {/* Top Bar */}
       <div className="d-flex justify-content-between align-items-center p-3 bg-primary text-white">
         <h3 className="m-0">Admin Dashboard</h3>
-        <Button variant="light" onClick={onLogout}>Logout</Button>
+        <Button variant="light" onClick={handleLogout}>Logout</Button>
       </div>
 
       {/* Stats Section */}

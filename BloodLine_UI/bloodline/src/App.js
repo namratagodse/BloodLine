@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // Components
 import CustomNavbar from './components/NavBar';
 import Footer from './components/Footer';
-import PrivateRoute from './components/PrivateRoute'; // NEW
+import PrivateRoute from './components/PrivateRoute';
 import MainContent from './pages/Home/MainContent';
 import DonationInfo from './pages/Home/DonationInfo';
 import SliderCards from './pages/Home/SliderCards';
@@ -15,14 +16,15 @@ import DonationSteps from './pages/Home/DonationSteps';
 import Register from './pages/Register';
 import AboutBloodDonation from './pages/AboutBloodDonation';
 import Login from './pages/Login';
-import AdminHome from './pages/Admin/AdminHome';
-import FeedbackPage from './pages/Feedback'; // NEW
+import AdminDashboard from './pages/Admin/AdminDashboard'; 
+import FeedbackPage from './pages/Feedback';
+import Unauthorized from './components/Unauthorized';
 
 function App() {
   const location = useLocation();
 
   // Hide Navbar & Footer only on Admin Dashboard
-  const isAdminRoute = location.pathname === '/admin-dashboard';
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <>
@@ -51,10 +53,28 @@ function App() {
         {/* Login Page */}
         <Route path="/login" element={<Login />} />
 
-        {/* Admin Dashboard */}
-        <Route path="/admin-dashboard" element={<AdminHome />} />
+        {/* Admin Dashboard - protected for Admins only */}
+        <Route
+          path="/admin-dashboard"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <AdminDashboard
+                stats={{
+                  feedbackCount: 0,
+                  donorCount: 0,
+                  receiverCount: 0,
+                  bloodBankCount: 0,
+                  bloodInventoryCount: 0,
+                }}
+              />
+            </PrivateRoute>
+          }
+        />
 
-        {/* Feedback Page (Protected) */}
+        {/* Unauthorized Access */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* Feedback - for any logged-in user */}
         <Route
           path="/feedback"
           element={
@@ -65,7 +85,6 @@ function App() {
         />
       </Routes>
 
-      {/* Toast Notifications */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
