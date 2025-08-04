@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BloodLine_Backend.BAL
 {
@@ -74,5 +75,150 @@ namespace BloodLine_Backend.BAL
 
             return null; // Invalid login
         }
+
+        public List<UserModel> GetAllDonors()
+        {
+            List<UserModel> donors = new List<UserModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Action", "GET_ALL_DONORS");
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        donors.Add(new UserModel
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            FullName = reader["FullName"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            PhoneNumber = reader["PhoneNumber"]?.ToString(),
+                            Gender = reader["Gender"]?.ToString(),
+                            DateOfBirth = reader["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(reader["DateOfBirth"]) : null,
+                            BloodGroup = reader["BloodGroup"]?.ToString(),
+                            Address = reader["Address"]?.ToString(),
+                            City = reader["City"]?.ToString(),
+                            District = reader["District"]?.ToString(),
+                            State = reader["State"]?.ToString(),
+                            Pincode = reader["Pincode"]?.ToString(),
+                            Role = reader["Role"]?.ToString(),
+                            IsActive = Convert.ToBoolean(reader["IsActive"])
+                        });
+                    }
+                }
+            }
+
+            return donors;
+        }
+
+        public string UpdateUser(UserModel user)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Action", "UPDATE");
+                cmd.Parameters.AddWithValue("@UserID", user.UserID);
+                cmd.Parameters.AddWithValue("@FullName", user.FullName);
+                cmd.Parameters.AddWithValue("@Email", user.Email);
+                cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Gender", user.Gender ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@DateOfBirth", user.DateOfBirth ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@BloodGroup", user.BloodGroup ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Address", user.Address ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@City", user.City ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@District", user.District ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@State", user.State ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Pincode", user.Pincode ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Role", user.Role ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@IsActive", user.IsActive);
+
+                con.Open();
+                var result = cmd.ExecuteScalar();
+                return result?.ToString() ?? "User updated successfully.";
+            }
+        }
+
+        public string DeleteUser(int userId)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Action", "DELETE");
+                cmd.Parameters.AddWithValue("@UserID", userId);
+
+                con.Open();
+                var result = cmd.ExecuteScalar();
+                return result?.ToString() ?? "User deleted successfully.";
+            }
+        }
+
+        public string ToggleUserStatus(int userId, bool isActive)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Action", "TOGGLE_STATUS");
+                cmd.Parameters.AddWithValue("@UserID", userId);
+                cmd.Parameters.AddWithValue("@IsActive", isActive);
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                connection.Close();
+                return "Status toggled successfully.";
+            }
+        }
+
+        public UserModel GetUserById(int userId)
+        {
+            UserModel user = null;
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Action", "GET_BY_ID");
+                cmd.Parameters.AddWithValue("@UserID", userId);
+
+                connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    user = new UserModel
+                    {
+                        UserID = Convert.ToInt32(reader["UserID"]),
+                        FullName = reader["FullName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        PhoneNumber = reader["PhoneNumber"].ToString(),
+                        Gender = reader["Gender"].ToString(),
+                        DateOfBirth = Convert.ToDateTime(reader["DateOfBirth"]),
+                        BloodGroup = reader["BloodGroup"].ToString(),
+                        Address = reader["Address"].ToString(),
+                        City = reader["City"].ToString(),
+                        District = reader["District"].ToString(),
+                        State = reader["State"].ToString(),
+                        Pincode = reader["Pincode"].ToString(),
+                        IsActive = Convert.ToBoolean(reader["IsActive"])
+                    };
+                }
+
+                connection.Close();
+            }
+
+            return user;
+        }
+
     }
 }

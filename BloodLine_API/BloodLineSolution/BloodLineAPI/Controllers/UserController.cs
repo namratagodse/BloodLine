@@ -86,5 +86,53 @@ namespace BloodLine_Backend.Controllers
                 role
             });
         }
+
+        [HttpGet("GetAllDonors")]
+        public IActionResult GetAllDonors()
+        {
+            var donors = _userBAL.GetAllDonors();
+            return Ok(donors);
+        }
+
+        [HttpPut("UpdateUser")]
+        public IActionResult UpdateUser([FromBody] UserModel user)
+        {
+            try
+            {
+                var result = _userBAL.UpdateUser(user);
+                return Ok(new { message = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("DeleteUser/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var result = _userBAL.DeleteUser(id);
+                return Ok(new { message = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("ToggleUserStatus/{id}")]
+        public IActionResult ToggleUserStatus(int id)
+        {
+            var user = _userBAL.GetUserById(id);
+            if (user == null) return NotFound();
+
+            bool newStatus = !(user.IsActive ?? false);
+            var result = _userBAL.ToggleUserStatus(id, newStatus);
+            return Ok(new { message = result });
+        }
+
+
     }
 }
