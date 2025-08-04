@@ -66,11 +66,60 @@ namespace BloodLineAPI.Controllers
                     UserID = Convert.ToInt32(reader["UserID"]),
                     FeedbackText = reader["FeedbackText"].ToString(),
                     Rating = Convert.ToInt32(reader["Rating"]),
-                    SubmittedAt = Convert.ToDateTime(reader["SubmittedAt"])
+                    SubmittedAt = Convert.ToDateTime(reader["SubmittedAt"]),
+                    FullName = reader["FullName"]?.ToString(),   
+                    Role = reader["Role"]?.ToString()            
                 });
             }
 
             return Ok(feedbackList);
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteFeedback(int id)
+        {
+            using SqlConnection con = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            using SqlCommand cmd = new SqlCommand("Feedback_CRUD", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@Action", "DELETE");
+            cmd.Parameters.AddWithValue("@FeedbackID", id);
+
+            con.Open();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            if (rowsAffected > 0)
+                return Ok(new { message = "Feedback deleted (soft) successfully." });
+            else
+                return NotFound(new { message = "Feedback not found." });
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public IActionResult UpdateFeedback([FromBody] FeedbackModel model)
+        {
+            try
+            {
+                using SqlConnection con = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+                using SqlCommand cmd = new SqlCommand("Feedback_CRUD", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Action", "UPDATE");
+                cmd.Parameters.AddWithValue("@FeedbackID", model.FeedbackID);
+                cmd.Parameters.AddWithValue("@FeedbackText", model.FeedbackText);
+                cmd.Parameters.AddWithValue("@Rating", model.Rating);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+
+                return Ok(new { message = "Feedback updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error updating feedback", error = ex.Message });
+            }
+        }
+
     }
 }

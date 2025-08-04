@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
@@ -6,7 +7,7 @@ import {
   deleteUser,
   updateUser,
 } from "../../Services/UserService";
-import { Table, Button, Form, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { FaEdit, FaTrash, FaToggleOn, FaToggleOff } from "react-icons/fa";
 
 function BloodBankList() {
@@ -42,9 +43,11 @@ function BloodBankList() {
       try {
         await deleteUser(id);
         fetchBloodBanks();
-      } catch (error) {
-        console.error("Failed to delete user", error);
-      }
+      toast.success("BloodBank deleted successfully");
+        } catch (error) {
+          console.error("Delete failed", error);
+          toast.error("Failed to delete bloodbank");
+        }
     }
   };
 
@@ -58,9 +61,11 @@ function BloodBankList() {
       await updateUser(editUser);
       setEditModalShow(false);
       fetchBloodBanks();
-    } catch (error) {
-      console.error("Failed to update user", error);
-    }
+    toast.success("BloodBank updated successfully");
+        } catch (error) {
+          console.error("Update failed", error);
+          toast.error("Failed to update bloodbank");
+        }
   };
 
   const handleChange = (e) => {

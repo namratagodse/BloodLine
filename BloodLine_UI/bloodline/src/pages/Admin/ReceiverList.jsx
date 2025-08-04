@@ -1,3 +1,5 @@
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
@@ -42,9 +44,11 @@ function ReceiverList() {
       try {
         await deleteUser(id);
         fetchReceivers();
-      } catch (error) {
-        console.error("Failed to delete user", error);
-      }
+      toast.success("Receiver delete successfully!");
+    } catch (error) {
+        console.error("Delete failed", error);
+        toast.error("Failed to delete donor.");
+    }
     }
   };
 
@@ -58,8 +62,10 @@ function ReceiverList() {
       await updateUser(editUser);
       setEditModalShow(false);
       fetchReceivers();
+    toast.success("Receiver updated successfully!");
     } catch (error) {
-      console.error("Failed to update user", error);
+        console.error("Update failed", error);
+        toast.error("Failed to update donor.");
     }
   };
 

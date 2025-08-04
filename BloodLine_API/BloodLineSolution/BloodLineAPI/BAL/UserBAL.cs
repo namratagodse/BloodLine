@@ -156,7 +156,7 @@ namespace BloodLineAPI.BAL
 
         public List<UserModel> GetAllBloodBanks()
         {
-            List<UserModel> bloodbanks = new List<UserModel>();
+            List<UserModel> donors = new List<UserModel>();
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
@@ -169,7 +169,7 @@ namespace BloodLineAPI.BAL
                 {
                     while (reader.Read())
                     {
-                        bloodbanks.Add(new UserModel
+                        donors.Add(new UserModel
                         {
                             UserID = Convert.ToInt32(reader["UserID"]),
                             FullName = reader["FullName"].ToString(),
@@ -190,7 +190,7 @@ namespace BloodLineAPI.BAL
                 }
             }
 
-            return bloodbanks;
+            return donors;
         }
 
 
@@ -280,16 +280,16 @@ namespace BloodLineAPI.BAL
                         UserID = Convert.ToInt32(reader["UserID"]),
                         FullName = reader["FullName"].ToString(),
                         Email = reader["Email"].ToString(),
-                        PhoneNumber = reader["PhoneNumber"].ToString(),
-                        Gender = reader["Gender"].ToString(),
-                        DateOfBirth = Convert.ToDateTime(reader["DateOfBirth"]),
-                        BloodGroup = reader["BloodGroup"].ToString(),
-                        Address = reader["Address"].ToString(),
-                        City = reader["City"].ToString(),
-                        District = reader["District"].ToString(),
-                        State = reader["State"].ToString(),
-                        Pincode = reader["Pincode"].ToString(),
-                        IsActive = Convert.ToBoolean(reader["IsActive"])
+                        PhoneNumber = reader["PhoneNumber"] != DBNull.Value ? reader["PhoneNumber"].ToString() : null,
+                        Gender = reader["Gender"] != DBNull.Value ? reader["Gender"].ToString() : null,
+                        DateOfBirth = reader["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(reader["DateOfBirth"]) : (DateTime?)null,
+                        BloodGroup = reader["BloodGroup"] != DBNull.Value ? reader["BloodGroup"].ToString() : null,
+                        Address = reader["Address"] != DBNull.Value ? reader["Address"].ToString() : null,
+                        City = reader["City"] != DBNull.Value ? reader["City"].ToString() : null,
+                        District = reader["District"] != DBNull.Value ? reader["District"].ToString() : null,
+                        State = reader["State"] != DBNull.Value ? reader["State"].ToString() : null,
+                        Pincode = reader["Pincode"] != DBNull.Value ? reader["Pincode"].ToString() : null,
+                        IsActive = reader["IsActive"] != DBNull.Value && Convert.ToBoolean(reader["IsActive"]),
                     };
                 }
 
@@ -298,7 +298,6 @@ namespace BloodLineAPI.BAL
 
             return user;
         }
-
 
     }
 }

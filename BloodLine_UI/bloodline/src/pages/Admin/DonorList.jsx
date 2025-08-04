@@ -1,3 +1,5 @@
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
@@ -102,14 +104,17 @@ const DonorList = () => {
   };
 
   const handleUpdateUser = async () => {
-    try {
-      await updateUser(editFormData);
-      setShowEditModal(false);
-      fetchDonors();
-    } catch (error) {
-      console.error("Update failed", error);
-    }
-  };
+  try {
+    await updateUser(editFormData);
+    setShowEditModal(false);
+    fetchDonors();
+    toast.success("Donor updated successfully!");
+  } catch (error) {
+    console.error("Update failed", error);
+    toast.error("Failed to update donor.");
+  }
+};
+
 
   return (
     <div className="container mt-4">

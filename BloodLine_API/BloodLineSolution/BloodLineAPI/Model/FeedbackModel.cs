@@ -6,9 +6,11 @@ namespace BloodLineAPI.Models
     {
         public int? FeedbackID { get; set; }
         public int UserID { get; set; }
+        public string? FullName { get; set; }   
+        public string? Role { get; set; }
         public string FeedbackText { get; set; }
         public int Rating { get; set; }
         public DateTime? SubmittedAt { get; set; }  
-        public string Action { get; set; }
+        public string? Action { get; set; }
     }
 }

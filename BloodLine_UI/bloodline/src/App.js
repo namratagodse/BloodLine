@@ -23,6 +23,7 @@ import AddUser from './pages/Admin/AddUser';
 import DonorsList from './pages/Admin/DonorList';
 import ReceiverList from './pages/Admin/ReceiverList';
 import BloodBankList from './pages/Admin/BloodBanksList';
+import FeedbackList from './pages/Admin/FeedbackList';
 
 function App() {
   const location = useLocation();
@@ -107,6 +108,15 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['Admin']}>
               <BloodBankList/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin-allfeedbacks"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <FeedbackList/>
             </PrivateRoute>
           }
         />
