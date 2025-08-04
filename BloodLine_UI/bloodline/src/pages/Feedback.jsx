@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 function FeedbackPage() {
   const [feedback, setFeedback] = useState({
@@ -8,31 +9,69 @@ function FeedbackPage() {
     rating: ''
   });
 
+  // Handle changes in form input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFeedback({ ...feedback, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Handle form submit
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Replace with your actual feedback API
-    const token = localStorage.getItem('token');
-    fetch('https://localhost:7282/api/feedback', {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    toast.error("User not logged in");
+    return;
+  }
+
+  try {
+    console.log("Token:", token);
+const decoded = jwtDecode(token);
+console.log("Decoded:", decoded);
+
+const userId = decoded?.UserID || decoded?.userId || decoded?.sub || decoded?.nameid;
+console.log("Extracted userId:", userId);
+
+if (!userId) {
+  toast.error("Invalid token");
+  return;
+}
+
+
+    if (!userId) {
+      toast.error("Invalid token");
+      return;
+    }
+
+    const payload = {
+      Action: "INSERT",
+      UserID: userId,
+      FeedbackText: feedback.text,
+      Rating: parseInt(feedback.rating)
+    };
+
+
+
+    const response = await fetch('https://localhost:7282/api/feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(feedback)
-    })
-      .then((res) => res.ok ? res.json() : Promise.reject("Error"))
-      .then(() => {
-        toast.success('Feedback submitted!');
-        setFeedback({ text: '', rating: '' });
-      })
-      .catch(() => toast.error('Failed to submit feedback.'));
-  };
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) throw new Error("Failed to submit");
+
+    toast.success('Feedback submitted successfully!');
+    setFeedback({ text: '', rating: '' });
+
+  } catch (error) {
+    toast.error('Failed to submit feedback.');
+    console.error(error);
+  }
+};
 
   return (
     <Container className="mt-5 pt-5" style={{ paddingTop: '100px', paddingBottom: '110px' }}>

@@ -6,7 +6,6 @@ function AdminHome() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    // ✅ Simulate API response with dummy data
     const mockStats = {
       feedbackCount: 10,
       donorCount: 25,

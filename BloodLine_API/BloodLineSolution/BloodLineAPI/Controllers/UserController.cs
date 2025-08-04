@@ -1,7 +1,7 @@
-﻿using BloodLine_Backend.BAL;
+﻿using BloodLineAPI.BAL;
 using BloodLineAPI.Model;
 using BloodLineAPI.Services;
-using Microsoft.AspNetCore.Authorization; // ✅ Make sure this is at the top
+using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -47,7 +47,7 @@ namespace BloodLine_Backend.Controllers
                 var user = _userBAL.LoginUser(login.Email, login.Password);
                 if (user != null)
                 {
-                    var token = _jwtService.GenerateJwtToken(user.Email, user.Role);
+                    var token = _jwtService.GenerateJwtToken(user.UserID.Value, user.Email, user.Role);
 
                     return Ok(new
                     {
@@ -70,7 +70,7 @@ namespace BloodLine_Backend.Controllers
             }
         }
 
-        // ✅ PROFILE (Protected Endpoint)
+        // PROFILE (Protected Endpoint)
         [Authorize]
         [HttpGet("profile")]
         public IActionResult GetUserProfile()
@@ -86,5 +86,67 @@ namespace BloodLine_Backend.Controllers
                 role
             });
         }
+
+        [HttpGet("GetAllDonors")]
+        public IActionResult GetAllDonors()
+        {
+            var donors = _userBAL.GetAllDonors();
+            return Ok(donors);
+        }
+
+        [HttpGet("GetAllReceivers")]
+        public IActionResult GetAllReceivers()
+        {
+            var receivers = _userBAL.GetAllReceivers();
+            return Ok(receivers);
+        }
+
+        [HttpGet("GetAllBloodBanks")]
+        public IActionResult GetAllBloodBanks()
+        {
+            var bloodbanks = _userBAL.GetAllBloodBanks();
+            return Ok(bloodbanks);
+        }
+
+        [HttpPut("UpdateUser")]
+        public IActionResult UpdateUser([FromBody] UserModel user)
+        {
+            try
+            {
+                var result = _userBAL.UpdateUser(user);
+                return Ok(new { message = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("DeleteUser/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var result = _userBAL.DeleteUser(id);
+                return Ok(new { message = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("ToggleUserStatus/{id}")]
+        public IActionResult ToggleUserStatus(int id)
+        {
+            var user = _userBAL.GetUserById(id);
+            if (user == null) return NotFound();
+
+            bool newStatus = !(user.IsActive ?? false);
+            var result = _userBAL.ToggleUserStatus(id, newStatus);
+            return Ok(new { message = result });
+        }
+
+
     }
 }

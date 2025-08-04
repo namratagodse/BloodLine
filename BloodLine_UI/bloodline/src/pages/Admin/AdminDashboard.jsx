@@ -11,12 +11,16 @@ function AdminDashboard({ stats }) {
     navigate('/'); // Redirect to home
   };
 
+  const handleAddBloodBank = () => {
+    navigate('/admin-adduser'); // Redirect to Blood Bank Registration page
+  };
+
   const dashboardCards = [
-    { title: 'Feedbacks', value: stats.feedbackCount, route: '/admin/feedbacks', color: 'secondary' },
-    { title: 'Donors', value: stats.donorCount, route: '/admin/donors', color: 'success' },
-    { title: 'Receivers', value: stats.receiverCount, route: '/admin/receivers', color: 'warning' },
-    { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin/blood-banks', color: 'danger' },
-    { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin/blood-inventory', color: 'dark' },
+    { title: 'Feedbacks', value: stats.feedbackCount, route: '/admin-allfeedbacks', color: 'secondary' },
+    { title: 'Donors', value: stats.donorCount, route: '/admin-alldonors', color: 'success' },
+    { title: 'Receivers', value: stats.receiverCount, route: '/admin-allreceivers', color: 'warning' },
+    { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin-allbloodbanks', color: 'danger' },
+    { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin-allbloodinventory', color: 'dark' },
   ];
 
   const handleCardClick = (route) => {
@@ -38,7 +42,12 @@ function AdminDashboard({ stats }) {
       {/* Top Bar */}
       <div className="d-flex justify-content-between align-items-center p-3 bg-primary text-white">
         <h3 className="m-0">Admin Dashboard</h3>
-        <Button variant="light" onClick={handleLogout}>Logout</Button>
+        <div>
+          <Button variant="light" className="me-2" onClick={handleAddBloodBank}>
+            Add User
+          </Button>
+          <Button variant="light" onClick={handleLogout}>Logout</Button>
+        </div>
       </div>
 
       {/* Stats Section */}

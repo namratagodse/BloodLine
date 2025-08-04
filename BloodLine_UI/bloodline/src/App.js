@@ -19,6 +19,10 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/Admin/AdminDashboard'; 
 import FeedbackPage from './pages/Feedback';
 import Unauthorized from './components/Unauthorized';
+import AddUser from './pages/Admin/AddUser';
+import DonorsList from './pages/Admin/DonorList';
+import ReceiverList from './pages/Admin/ReceiverList';
+import BloodBankList from './pages/Admin/BloodBanksList';
 
 function App() {
   const location = useLocation();
@@ -67,6 +71,42 @@ function App() {
                   bloodInventoryCount: 0,
                 }}
               />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin-adduser"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <AddUser />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin-alldonors"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <DonorsList/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin-allreceivers"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <ReceiverList/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin-allbloodbanks"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <BloodBankList/>
             </PrivateRoute>
           }
         />
