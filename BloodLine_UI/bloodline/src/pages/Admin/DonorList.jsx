@@ -8,6 +8,7 @@ import {
 } from "../../Services/UserService";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
+import { FaEdit, FaTrash, FaToggleOn, FaToggleOff } from "react-icons/fa";
 
 
 const DonorList = () => {
@@ -125,7 +126,6 @@ const DonorList = () => {
   <table className="table table-bordered table-hover">
     <thead style={{ backgroundColor: "#343a40", color: "white", textAlign: "center" }}>
       <tr>
-        <th><strong>UserID</strong></th>
         <th><strong>Full Name</strong></th>
         <th><strong>Email</strong></th>
         <th><strong>Phone</strong></th>
@@ -137,7 +137,6 @@ const DonorList = () => {
         <th><strong>District</strong></th>
         <th><strong>State</strong></th>
         <th><strong>Pincode</strong></th>
-        <th><strong>Role</strong></th>
         <th><strong>Status</strong></th>
         <th><strong>Action</strong></th>
       </tr>
@@ -145,7 +144,6 @@ const DonorList = () => {
           <tbody>
             {donors.map((donor) => (
               <tr key={donor.userID}>
-                <td>{donor.userID}</td>
                 <td>{donor.fullName}</td>
                 <td>{donor.email}</td>
                 <td>{donor.phoneNumber}</td>
@@ -161,31 +159,33 @@ const DonorList = () => {
                 <td>{donor.district}</td>
                 <td>{donor.state}</td>
                 <td>{donor.pincode}</td>
-                <td>{donor.role}</td>
                 <td>
-                  <button
-                    className={`btn btn-sm ${
-                      donor.isActive ? "btn-success" : "btn-secondary"
-                    }`}
-                    onClick={() => handleToggleStatus(donor.userID)}
-                  >
-                    {donor.isActive ? "Active" : "Inactive"}
-                  </button>
-                </td>
+                                <Button
+                                  variant={donor.isActive ? "success" : "secondary"}
+                                  onClick={() => handleToggleStatus(donor.userID)}
+                                >
+                                  {donor.isActive ? (
+                                    <FaToggleOn size={20} />
+                                  ) : (
+                                    <FaToggleOff size={20} />
+                                  )}
+                                </Button>
+                              </td>
                 <td>
-                  <button
-                    className="btn btn-primary btn-sm me-2"
-                    onClick={() => openEditModal(donor)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(donor.userID)}
-                  >
-                    Delete
-                  </button>
-                </td>
+                                <Button
+                                  variant="warning"
+                                  onClick={() => openEditModal(donor)}
+                                  className="me-2"
+                                >
+                                  <FaEdit />
+                                </Button>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => handleDelete(donor.userID)}
+                                >
+                                  <FaTrash />
+                                </Button>
+                              </td>
               </tr>
             ))}
           </tbody>

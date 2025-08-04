@@ -1,6 +1,8 @@
-﻿namespace BloodLineAPI.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BloodLineAPI.Model
 {
-    public class UserModel
+    public class UserModel : IValidatableObject
     {
         public int? UserID { get; set; }
         public string Action { get; set; }
@@ -18,6 +20,26 @@
         public string Pincode { get; set; }
         public string Role { get; set; }
         public bool? IsActive { get; set; }
-    }
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!string.Equals(Role, "BloodBank", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrWhiteSpace(Gender))
+                {
+                    yield return new ValidationResult("The Gender field is required.", new[] { nameof(Gender) });
+                }
+
+                if (string.IsNullOrWhiteSpace(BloodGroup))
+                {
+                    yield return new ValidationResult("The BloodGroup field is required.", new[] { nameof(BloodGroup) });
+                }
+
+                if (!DateOfBirth.HasValue)
+                {
+                    yield return new ValidationResult("The DateOfBirth field is required.", new[] { nameof(DateOfBirth) });
+                }
+            }
+        }
+    }
 }

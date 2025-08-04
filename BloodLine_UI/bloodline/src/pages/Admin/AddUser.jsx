@@ -66,21 +66,25 @@ const AddUser = () => {
   }
 
   const payload = {
-    FullName: formData.fullName,
-    Email: formData.email,
-    PhoneNumber: formData.phoneNumber,
-    Gender: formData.role !== "BloodBank" ? formData.gender : null,
-    DateOfBirth: formData.role !== "BloodBank" ? formData.dateOfBirth : null,
-    BloodGroup: formData.role !== "BloodBank" ? formData.bloodGroup : null,
-    Address: formData.address,
-    State: formData.state,
-    District: formData.district,
-    City: formData.city,
-    Pincode: formData.pincode,
-    Role: formData.role,
-    PasswordHash: formData.password,
-    Action: "Insert",
-  };
+  FullName: formData.fullName,
+  Email: formData.email,
+  PhoneNumber: formData.phoneNumber,
+  Address: formData.address,
+  State: formData.state,
+  District: formData.district,
+  City: formData.city,
+  Pincode: formData.pincode,
+  Role: formData.role,
+  PasswordHash: formData.password,
+  Action: "Insert",
+};
+
+if (formData.role !== "BloodBank") {
+  payload.Gender = formData.gender;
+  payload.DateOfBirth = formData.dateOfBirth;
+  payload.BloodGroup = formData.bloodGroup;
+}
+
 
   try {
     const response = await axios.post(
@@ -181,7 +185,7 @@ const AddUser = () => {
                       name="gender"
                       value={formData.gender}
                       onChange={handleChange}
-                      required
+                      
                     >
                       <option value="">-- Select Gender --</option>
                       <option value="Male">Male</option>
@@ -197,7 +201,7 @@ const AddUser = () => {
                       name="dateOfBirth"
                       value={formData.dateOfBirth}
                       onChange={handleChange}
-                      required
+                      
                     />
                   </Form.Group>
 
@@ -207,7 +211,7 @@ const AddUser = () => {
                       name="bloodGroup"
                       value={formData.bloodGroup}
                       onChange={handleChange}
-                      required
+                      
                     >
                       <option value="">-- Select Blood Group --</option>
                       <option value="A+">A+</option>

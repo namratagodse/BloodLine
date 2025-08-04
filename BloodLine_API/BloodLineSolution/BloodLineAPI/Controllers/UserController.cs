@@ -1,7 +1,7 @@
-﻿using BloodLine_Backend.BAL;
+﻿using BloodLineAPI.BAL;
 using BloodLineAPI.Model;
 using BloodLineAPI.Services;
-using Microsoft.AspNetCore.Authorization; // ✅ Make sure this is at the top
+using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -47,7 +47,7 @@ namespace BloodLine_Backend.Controllers
                 var user = _userBAL.LoginUser(login.Email, login.Password);
                 if (user != null)
                 {
-                    var token = _jwtService.GenerateJwtToken(user.Email, user.Role);
+                    var token = _jwtService.GenerateJwtToken(user.UserID.Value, user.Email, user.Role);
 
                     return Ok(new
                     {
@@ -70,7 +70,7 @@ namespace BloodLine_Backend.Controllers
             }
         }
 
-        // ✅ PROFILE (Protected Endpoint)
+        // PROFILE (Protected Endpoint)
         [Authorize]
         [HttpGet("profile")]
         public IActionResult GetUserProfile()
@@ -92,6 +92,13 @@ namespace BloodLine_Backend.Controllers
         {
             var donors = _userBAL.GetAllDonors();
             return Ok(donors);
+        }
+
+        [HttpGet("GetAllReceivers")]
+        public IActionResult GetAllReceivers()
+        {
+            var receivers = _userBAL.GetAllReceivers();
+            return Ok(receivers);
         }
 
         [HttpPut("UpdateUser")]

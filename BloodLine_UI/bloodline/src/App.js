@@ -21,6 +21,7 @@ import FeedbackPage from './pages/Feedback';
 import Unauthorized from './components/Unauthorized';
 import AddUser from './pages/Admin/AddUser';
 import DonorsList from './pages/Admin/DonorList';
+import ReceiverList from './pages/Admin/ReceiverList';
 
 function App() {
   const location = useLocation();
@@ -87,6 +88,15 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['Admin']}>
               <DonorsList/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin-allreceivers"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <ReceiverList/>
             </PrivateRoute>
           }
         />

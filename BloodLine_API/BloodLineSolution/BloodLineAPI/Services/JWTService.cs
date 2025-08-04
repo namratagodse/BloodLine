@@ -16,10 +16,11 @@ namespace BloodLineAPI.Services
             _config = config;
         }
 
-        public string GenerateJwtToken(string email, string role)
+        public string GenerateJwtToken(int userId, string email, string role)
         {
             var claims = new[]
             {
+                new Claim("UserID", userId.ToString()),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Role, role)
             };
