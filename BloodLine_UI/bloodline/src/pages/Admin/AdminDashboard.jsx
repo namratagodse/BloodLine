@@ -16,11 +16,11 @@ function AdminDashboard({ stats }) {
   };
 
   const dashboardCards = [
-    { title: 'Feedbacks', value: stats.feedbackCount, route: '/admin/feedbacks', color: 'secondary' },
+    { title: 'Feedbacks', value: stats.feedbackCount, route: '/admin-allfeedbacks', color: 'secondary' },
     { title: 'Donors', value: stats.donorCount, route: '/admin-alldonors', color: 'success' },
     { title: 'Receivers', value: stats.receiverCount, route: '/admin-allreceivers', color: 'warning' },
-    { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin/blood-banks', color: 'danger' },
-    { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin/blood-inventory', color: 'dark' },
+    { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin-allbloodbanks', color: 'danger' },
+    { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin-allbloodinventory', color: 'dark' },
   ];
 
   const handleCardClick = (route) => {

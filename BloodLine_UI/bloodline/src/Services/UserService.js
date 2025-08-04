@@ -14,6 +14,11 @@ export const getAllReceivers = async () => {
   return response.data;
 };
 
+export const getAllBloodBanks = async () => {
+  const response = await axios.get(`${API_BASE_URL}/GetAllBloodBanks`);
+  return response.data;
+};
+
 // ✅ Add this for toggle status
 export const toggleUserStatus = async (userId) => {
   const response = await axios.post(`https://localhost:7282/api/User/ToggleUserStatus/${userId}`);

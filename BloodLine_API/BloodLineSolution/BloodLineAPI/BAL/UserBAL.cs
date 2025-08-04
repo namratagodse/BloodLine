@@ -154,6 +154,45 @@ namespace BloodLineAPI.BAL
     return receivers;
 }
 
+        public List<UserModel> GetAllBloodBanks()
+        {
+            List<UserModel> bloodbanks = new List<UserModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Action", "GET_ALL_BLOODBANKS");
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        bloodbanks.Add(new UserModel
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            FullName = reader["FullName"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            PhoneNumber = reader["PhoneNumber"]?.ToString(),
+                            Gender = reader["Gender"]?.ToString(),
+                            DateOfBirth = reader["DateOfBirth"] != DBNull.Value ? Convert.ToDateTime(reader["DateOfBirth"]) : null,
+                            BloodGroup = reader["BloodGroup"]?.ToString(),
+                            Address = reader["Address"]?.ToString(),
+                            City = reader["City"]?.ToString(),
+                            District = reader["District"]?.ToString(),
+                            State = reader["State"]?.ToString(),
+                            Pincode = reader["Pincode"]?.ToString(),
+                            Role = reader["Role"]?.ToString(),
+                            IsActive = Convert.ToBoolean(reader["IsActive"])
+                        });
+                    }
+                }
+            }
+
+            return bloodbanks;
+        }
+
 
         public string UpdateUser(UserModel user)
         {

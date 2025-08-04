@@ -101,6 +101,13 @@ namespace BloodLine_Backend.Controllers
             return Ok(receivers);
         }
 
+        [HttpGet("GetAllBloodBanks")]
+        public IActionResult GetAllBloodBanks()
+        {
+            var bloodbanks = _userBAL.GetAllBloodBanks();
+            return Ok(bloodbanks);
+        }
+
         [HttpPut("UpdateUser")]
         public IActionResult UpdateUser([FromBody] UserModel user)
         {
