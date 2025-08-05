@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import AdminDashboard from './AdminDashboard';
-// import axios from 'axios'; // Temporarily remove
+import { getAdminDashboardCounts } from '../../Services/AdminDashboardService';
 
 function AdminHome() {
   const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const mockStats = {
-      feedbackCount: 10,
-      donorCount: 25,
-      receiverCount: 15,
-      bloodBankCount: 4,
-      bloodInventoryCount: 200
+    const fetchStats = async () => {
+      try {
+        const data = await getAdminDashboardCounts();
+        setStats(data);
+      } catch (error) {
+        console.error('Failed to fetch dashboard stats:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // Simulate network delay
-    setTimeout(() => {
-      setStats(mockStats);
-    }, 500); // 0.5 second delay
+    fetchStats();
   }, []);
 
-  const handleLogout = () => {
-    console.log('Logout clicked');
-  };
+  if (loading) return <p className="text-center mt-5">Loading admin dashboard...</p>;
 
-  if (!stats) return <p className="text-center mt-5">Loading admin dashboard...</p>;
-
-  return <AdminDashboard stats={stats} onLogout={handleLogout} />;
+  return <AdminDashboard stats={stats} />;
 }
 
 export default AdminHome;

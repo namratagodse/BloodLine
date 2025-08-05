@@ -299,5 +299,31 @@ namespace BloodLineAPI.BAL
             return user;
         }
 
+        public DashboardStatsModel GetAdminDashboardCounts()
+        {
+            DashboardStatsModel stats = new DashboardStatsModel();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlCommand cmd = new SqlCommand("sp_GetAdminDashboardCounts", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        stats.DonorCount = Convert.ToInt32(reader["DonorCount"]);
+                        stats.ReceiverCount = Convert.ToInt32(reader["ReceiverCount"]);
+                        stats.BloodBankCount = Convert.ToInt32(reader["BloodBankCount"]);
+                        stats.FeedbackCount = Convert.ToInt32(reader["FeedbackCount"]);
+                    }
+                }
+            }
+
+            return stats;
+        }
+
+
     }
 }

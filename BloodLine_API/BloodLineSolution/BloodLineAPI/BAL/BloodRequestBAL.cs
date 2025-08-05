@@ -98,6 +98,5 @@ namespace BloodLineAPI.BAL
 
             return requests;
         }
-
     }
 }

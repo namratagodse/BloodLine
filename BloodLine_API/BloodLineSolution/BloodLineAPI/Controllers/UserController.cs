@@ -147,6 +147,12 @@ namespace BloodLine_Backend.Controllers
             return Ok(new { message = result });
         }
 
+        [HttpGet("admindashboardcounts")]
+        public IActionResult GetAdminDashboardCounts()
+        {
+            var counts = _userBAL.GetAdminDashboardCounts();
+            return Ok(counts);
+        }
 
     }
 }
