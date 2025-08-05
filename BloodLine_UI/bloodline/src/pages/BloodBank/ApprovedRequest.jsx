@@ -2,45 +2,45 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Table, Spinner } from "react-bootstrap";
 
-const RejectedRequest = () => {
-  const [rejectedRequests, setRejectedRequests] = useState([]);
+const ApprovedRequest = () => {
+  const [approvedRequests, setApprovedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchRejectedRequests = async () => {
+  const fetchApprovedRequests = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://localhost:7282/api/BloodRequest/getbystatuswithuser/Rejected",
+        "https://localhost:7282/api/BloodRequest/getbystatuswithuser/Approved",
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setRejectedRequests(response.data);
+      setApprovedRequests(response.data);
     } catch (error) {
-      console.error("Error fetching rejected requests:", error);
+      console.error("Error fetching approved requests:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchRejectedRequests();
+    fetchApprovedRequests();
   }, []);
 
   return (
     <Card className="mt-4">
       <Card.Header>
-        <h4 className="mb-0">Rejected Blood Requests</h4>
+        <h4 className="mb-0">Approved Blood Requests</h4>
       </Card.Header>
       <Card.Body>
         {loading ? (
           <div className="text-center">
-            <Spinner animation="border" variant="danger" />
+            <Spinner animation="border" variant="success" />
           </div>
-        ) : rejectedRequests.length === 0 ? (
-          <p>No rejected requests found.</p>
+        ) : approvedRequests.length === 0 ? (
+          <p>No approved requests found.</p>
         ) : (
           <Table striped bordered hover responsive>
             <thead>
@@ -54,14 +54,14 @@ const RejectedRequest = () => {
               </tr>
             </thead>
             <tbody>
-              {rejectedRequests.map((request, index) => (
+              {approvedRequests.map((request, index) => (
                 <tr key={request.requestId}>
                   <td>{index + 1}</td>
                   <td>{request.requesterName}</td>
                   <td>{request.bloodGroup}</td>
                   <td>{request.unitsRequired}</td>
                   <td>{request.reason}</td>
-                  <td style={{ color: "red" }}>{request.status}</td>
+                  <td style={{ color: "green" }}>{request.status}</td>
                 </tr>
               ))}
             </tbody>
@@ -72,4 +72,4 @@ const RejectedRequest = () => {
   );
 };
 
-export default RejectedRequest;
+export default ApprovedRequest;

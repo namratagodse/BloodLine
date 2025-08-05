@@ -47,5 +47,23 @@ namespace BloodLineAPI.BAL
             return list;
         }
 
+        public string UpdateRequestStatus(UpdateRequestModel model)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_BloodRequest_CRUD", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Action", "UPDATESTATUS");
+                cmd.Parameters.AddWithValue("@RequestId", model.RequestId);
+                cmd.Parameters.AddWithValue("@Status", model.Status);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            return "Status updated successfully.";
+        }
+
     }
 }

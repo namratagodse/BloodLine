@@ -1,4 +1,5 @@
 ﻿using BloodLineAPI.BAL;
+using BloodLineAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -22,5 +23,11 @@ namespace BloodLineAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost("updatestatus")]
+        public IActionResult UpdateStatus([FromBody] UpdateRequestModel model)
+        {
+            var result = _bloodRequestBAL.UpdateRequestStatus(model);
+            return Ok(result);
+        }
     }
 }

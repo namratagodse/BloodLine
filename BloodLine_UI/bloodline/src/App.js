@@ -27,6 +27,8 @@ import FeedbackList from './pages/Admin/FeedbackList';
 import BloodBankDashboard from './pages/BloodBank/BloodBankDashboard';
 import BloodBankNavbar from './pages/BloodBank/BloodBankNavbar';
 import RejectedRequest from './pages/BloodBank/RejectedRequest';
+import ApprovedRequest from './pages/BloodBank/ApprovedRequest';
+import PendingRequests from './pages/BloodBank/PendingRequest';
 
 function App() {
   const location = useLocation();
@@ -136,10 +138,28 @@ function App() {
         />
 
         <Route
-        path="/bloodbank-requests"
+        path="/bloodbank-requests/Rejected"
         element={
           <PrivateRoute allowedRoles={['BloodBank']}>
             <RejectedRequest />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/bloodbank-requests/Approved"
+        element={
+          <PrivateRoute allowedRoles={['BloodBank']}>
+            <ApprovedRequest />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/bloodbank-requests/Pending"
+        element={
+          <PrivateRoute allowedRoles={['BloodBank']}>
+            <PendingRequests />
           </PrivateRoute>
         }
       />

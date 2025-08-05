@@ -11,3 +11,25 @@ export const getRequestsByStatus = async (status) => {
     throw error;
   }
 };
+
+export const updateRequestStatus = async (requestId, status) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.post(
+      `${API_BASE_URL}/updatestatus`,
+      {
+        requestId: requestId,
+        status: status,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Error updating request status:", error);
+    throw error;
+  }
+};

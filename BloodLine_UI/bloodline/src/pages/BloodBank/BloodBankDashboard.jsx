@@ -65,7 +65,7 @@ const BloodBankDashboard = () => {
         <Col md={6} lg={3}>
           <Card
             className="text-center p-3 shadow-sm"
-            onClick={() => handleCardClick("/bloodbank-requests?status=Pending")}
+            onClick={() => handleCardClick("/bloodbank-requests/Pending")}
             style={{ cursor: "pointer" }}
           >
             <h4>Pending Requests</h4>
@@ -76,7 +76,7 @@ const BloodBankDashboard = () => {
         <Col md={6} lg={3}>
           <Card
             className="text-center p-3 shadow-sm"
-            onClick={() => handleCardClick("/bloodbank-requests?status=Approved")}
+            onClick={() => handleCardClick("/bloodbank-requests/Approved")}
             style={{ cursor: "pointer" }}
           >
             <h4>Approved Requests</h4>
@@ -87,7 +87,7 @@ const BloodBankDashboard = () => {
          <Col md={6} lg={3}>
           <Card
             className="text-center p-3 shadow-sm"
-            onClick={() => handleCardClick("/bloodbank-requests?status=Rejected")}
+            onClick={() => handleCardClick("/bloodbank-requests/Rejected")}
             style={{ cursor: "pointer" }}
           >
             <h4>Rejected Requests</h4>
