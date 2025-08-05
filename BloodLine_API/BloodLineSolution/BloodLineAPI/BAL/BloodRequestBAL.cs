@@ -65,5 +65,39 @@ namespace BloodLineAPI.BAL
             return "Status updated successfully.";
         }
 
+        public List<BloodRequestModel> GetAllRequestsWithUser()
+        {
+            List<BloodRequestModel> requests = new List<BloodRequestModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlCommand cmd = new SqlCommand("sp_BloodRequest_CRUD", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Action", "GETALLWITHUSER");
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        requests.Add(new BloodRequestModel
+                        {
+                            RequestId = Convert.ToInt32(reader["RequestId"]),
+                            RequesterId = Convert.ToInt32(reader["RequesterId"]),
+                            RequesterName = reader["RequesterName"].ToString(),
+                            BloodGroup = reader["BloodGroup"].ToString(),
+                            UnitsRequired = Convert.ToInt32(reader["UnitsRequired"]),
+                            RequiredDate = Convert.ToDateTime(reader["RequiredDate"]),
+                            Reason = reader["Reason"].ToString(),
+                            Status = reader["Status"].ToString(),
+                            CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                        });
+                    }
+                }
+            }
+
+            return requests;
+        }
+
     }
 }

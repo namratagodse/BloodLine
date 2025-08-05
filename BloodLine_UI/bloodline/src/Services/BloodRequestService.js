@@ -33,3 +33,13 @@ export const updateRequestStatus = async (requestId, status) => {
     throw error;
   }
 };
+
+export const getAllRequestsWithUser = async () => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API_URL}/getallwithuser`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};

@@ -29,6 +29,7 @@ import BloodBankNavbar from './pages/BloodBank/BloodBankNavbar';
 import RejectedRequest from './pages/BloodBank/RejectedRequest';
 import ApprovedRequest from './pages/BloodBank/ApprovedRequest';
 import PendingRequests from './pages/BloodBank/PendingRequest';
+import TotalRequests from './pages/BloodBank/TotalRequest';
 
 function App() {
   const location = useLocation();
@@ -164,6 +165,14 @@ function App() {
         }
       />
 
+      <Route
+        path="/bloodbank-requests/all"
+        element={
+          <PrivateRoute allowedRoles={['BloodBank']}>
+            <TotalRequests />
+          </PrivateRoute>
+        }
+      />
 
         {/* Unauthorized Access */}
         <Route path="/unauthorized" element={<Unauthorized />} />

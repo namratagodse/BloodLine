@@ -29,5 +29,13 @@ namespace BloodLineAPI.Controllers
             var result = _bloodRequestBAL.UpdateRequestStatus(model);
             return Ok(result);
         }
+
+        [HttpGet("getallwithuser")]
+        public IActionResult GetAllRequestsWithUser()
+        {
+            var result = _bloodRequestBAL.GetAllRequestsWithUser();
+            return Ok(result);
+        }
+
     }
 }

@@ -43,7 +43,7 @@ const BloodBankDashboard = () => {
         <Col md={6} lg={3}>
           <Card
             className="text-center p-3 shadow-sm"
-            onClick={() => handleCardClick("/bloodbank-requests")}
+            onClick={() => handleCardClick("/bloodbank-requests/all")}
             style={{ cursor: "pointer" }}
           >
             <h4>Total Requests</h4>

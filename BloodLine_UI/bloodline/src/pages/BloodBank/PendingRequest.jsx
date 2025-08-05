@@ -8,13 +8,16 @@ import {
   ToastContainer,
   Dropdown,
   DropdownButton,
+  Button
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const PendingRequest = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const navigate = useNavigate();
 
   const fetchPendingRequests = async () => {
     try {
@@ -133,6 +136,16 @@ const PendingRequest = () => {
               </tbody>
             </Table>
           )}
+
+          <div className="text-end mt-4">
+            <Button
+            variant="secondary"
+            onClick={() => navigate("/bloodbank-dashboard")}
+            style={{ backgroundColor: "blue", borderColor: "blue" }}
+            >
+            Back
+            </Button>
+        </div>
         </Card.Body>
       </Card>
 

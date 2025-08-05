@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Table, Spinner } from "react-bootstrap";
+import { Card, Table, Spinner, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const RejectedRequest = () => {
   const [rejectedRequests, setRejectedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchRejectedRequests = async () => {
     try {
@@ -67,6 +69,16 @@ const RejectedRequest = () => {
             </tbody>
           </Table>
         )}
+
+        <div className="text-end mt-4">
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/bloodbank-dashboard")}
+            style={{ backgroundColor: "blue", borderColor: "blue" }}
+          >
+            Back
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );
