@@ -10,37 +10,45 @@ function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const data = await loginUser(email, password);
+const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const data = await loginUser(email, password);
 
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        toast.success("Login successful!");
+    if (data && data.token) {
+      localStorage.setItem("token", data.token);
+      toast.success("Login successful!");
 
-        // 👇 Decode token to get role
-        const decoded = jwtDecode(data.token);
-        const role = decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      const decoded = jwtDecode(data.token);
+      console.log("Decoded Token:", decoded); // Debugging
 
-        // 👇 Navigate based on role
-        if (role === 'Admin') {
-            navigate("/admin-dashboard");
-          } else if (role === 'Donor') {
-            navigate("/donor-dashboard");
-          } else if (role === 'Receiver') {
-            navigate("/receiver-dashboard");
-          } else {
-             toast.error("Unknown user role.");
-          }
+      const possibleRoles = [
+        decoded.role,
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+        decoded["role_name"],
+        decoded["user_role"]
+      ];
+      const role = possibleRoles.find(r => typeof r === 'string');
+
+      if (role === 'Admin') {
+        navigate("/admin-dashboard");
+      } else if (role === 'Donor') {
+        navigate("/donor-dashboard");
+      } else if (role === 'Receiver') {
+        navigate("/receiver-dashboard");
+      } else if (role === 'BloodBank') {
+        navigate("/bloodbank-dashboard");
       } else {
-        toast.error("Login failed: No token received.");
+        toast.error("Unknown user role.");
       }
-
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Login failed.");
+    } else {
+      toast.error("Login failed: No token received.");
     }
-  };
+
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Login failed.");
+  }
+};
 
   return (
     <div className="mt-5 pt-2">
