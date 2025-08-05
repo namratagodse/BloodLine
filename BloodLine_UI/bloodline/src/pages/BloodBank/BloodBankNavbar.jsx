@@ -13,13 +13,11 @@ const BloodBankNavbar = () => {
   };
 
   return (
-    <nav style={{ backgroundColor: '#9B1C2E', padding: '1rem', color: 'white' }}>
+    <nav style={{ backgroundColor: '#9B1C2E', padding: '1rem 2rem', color: 'white' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
-        alignItems: 'center', 
-        maxWidth: '1200px', 
-        margin: '0 auto' 
+        alignItems: 'center'
       }}>
         <h4 style={{ margin: 0 }}>Blood Bank Dashboard</h4>
         <button 
