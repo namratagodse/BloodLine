@@ -2,30 +2,42 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Table, Spinner, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
 const ApprovedRequest = () => {
   const [approvedRequests, setApprovedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchApprovedRequests = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "https://localhost:7282/api/BloodRequest/getbystatuswithuser/Approved",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setApprovedRequests(response.data);
-    } catch (error) {
-      console.error("Error fetching approved requests:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchApprovedRequests = async () => {
+  try {
+    const token = localStorage.getItem("token");
+      const decoded = jwtDecode(token);
+    const bloodBankId = decoded.UserId; // Or adjust based on your token payload
+
+    const response = await axios.get(
+      "https://localhost:7282/api/BloodRequest",
+      {
+        action: "GETBYSTATUSWITHUSER",
+        status: "Approved",
+        bloodBankId: bloodBankId
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setApprovedRequests(response.data);
+  } catch (error) {
+    console.error("Error fetching approved requests:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchApprovedRequests();
@@ -71,13 +83,13 @@ const ApprovedRequest = () => {
         )}
 
         <div className="text-end mt-4">
-            <Button
+          <Button
             variant="secondary"
             onClick={() => navigate("/bloodbank-dashboard")}
             style={{ backgroundColor: "blue", borderColor: "blue" }}
-            >
+          >
             Back
-            </Button>
+          </Button>
         </div>
       </Card.Body>
     </Card>

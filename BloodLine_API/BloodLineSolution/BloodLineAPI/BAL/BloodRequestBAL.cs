@@ -12,7 +12,8 @@ namespace BloodLineAPI.BAL
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-        public List<BloodRequestModel> GetRequestsByStatusWithUser(string status)
+
+        public List<BloodRequestModel> GetRequestsByStatusWithUser(string status, int? bloodBankId)
         {
             List<BloodRequestModel> list = new List<BloodRequestModel>();
 
@@ -22,6 +23,7 @@ namespace BloodLineAPI.BAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Action", "GETBYSTATUSWITHUSER");
                 cmd.Parameters.AddWithValue("@Status", status);
+                cmd.Parameters.AddWithValue("@BloodBankId", bloodBankId);
 
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -65,7 +67,7 @@ namespace BloodLineAPI.BAL
             return "Status updated successfully.";
         }
 
-        public List<BloodRequestModel> GetAllRequestsWithUser()
+        public List<BloodRequestModel> GetAllRequestsWithUser(int? bloodBankId)
         {
             List<BloodRequestModel> requests = new List<BloodRequestModel>();
 
@@ -74,6 +76,7 @@ namespace BloodLineAPI.BAL
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Action", "GETALLWITHUSER");
+                cmd.Parameters.AddWithValue("@BloodBankId", bloodBankId);
 
                 conn.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -97,6 +100,31 @@ namespace BloodLineAPI.BAL
             }
 
             return requests;
+        }
+
+        public BloodRequestCountModel GetRequestCounts(int? bloodBankId)
+        {
+            BloodRequestCountModel counts = new BloodRequestCountModel();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_BloodRequest_CRUD", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Action", "GET_REQUEST_COUNTS");
+                cmd.Parameters.AddWithValue("@BloodBankId", bloodBankId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    counts.Total = Convert.ToInt32(reader["TotalRequests"]);
+                    counts.Pending = Convert.ToInt32(reader["PendingRequests"]);
+                    counts.Approved = Convert.ToInt32(reader["ApprovedRequests"]);
+                    counts.Rejected = Convert.ToInt32(reader["RejectedRequests"]);
+                }
+            }
+
+            return counts;
         }
     }
 }

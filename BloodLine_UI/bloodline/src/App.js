@@ -30,6 +30,8 @@ import RejectedRequest from './pages/BloodBank/RejectedRequest';
 import ApprovedRequest from './pages/BloodBank/ApprovedRequest';
 import PendingRequests from './pages/BloodBank/PendingRequest';
 import TotalRequests from './pages/BloodBank/TotalRequest';
+import ReceiverDashboard from './pages/Receiver/ReceiverDashboard';
+import DonorDashboard from './pages/Donor/DonorDashboard';
 
 function App() {
   const location = useLocation();
@@ -37,10 +39,12 @@ function App() {
   // Hide Navbar & Footer only on Admin Dashboard
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isBloodBankRoute = location.pathname.startsWith('/bloodbank');
+  const isReceiverRoute = location.pathname.startsWith('/receiver');
+  const isDonorRoute = location.pathname.startsWith('/donor');
 
   return (
     <>
-      {!isAdminRoute && !isBloodBankRoute && <CustomNavbar />}
+      {!isAdminRoute && !isBloodBankRoute  && <CustomNavbar />}
       {isBloodBankRoute && <BloodBankNavbar />}
 
       <Routes>
@@ -174,6 +178,24 @@ function App() {
         }
       />
 
+      <Route
+        path="/receiver-dashboard"
+        element={
+          <PrivateRoute allowedRoles={['Receiver']}>
+            <ReceiverDashboard />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/donor-dashboard"
+        element={
+          <PrivateRoute allowedRoles={['Donor']}>
+            <DonorDashboard />
+          </PrivateRoute>
+        }
+      />
+
         {/* Unauthorized Access */}
         <Route path="/unauthorized" element={<Unauthorized />} />
 
@@ -200,7 +222,7 @@ function App() {
         theme="colored"
       />
 
-      {!isAdminRoute && !isBloodBankRoute && <Footer />}
+{!isAdminRoute && !isBloodBankRoute && !isReceiverRoute && !isDonorRoute && <Footer />}
     </>
   );
 }

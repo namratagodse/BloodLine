@@ -17,9 +17,9 @@ namespace BloodLineAPI.Controllers
         }
 
         [HttpGet("getbystatuswithuser/{status}")]
-        public IActionResult GetRequestsByStatusWithUser(string status)
+        public IActionResult GetRequestsByStatusWithUser(string status, [FromQuery] int? bloodBankId = null)
         {
-            var result = _bloodRequestBAL.GetRequestsByStatusWithUser(status);
+            var result = _bloodRequestBAL.GetRequestsByStatusWithUser(status, bloodBankId);
             return Ok(result);
         }
 
@@ -31,10 +31,24 @@ namespace BloodLineAPI.Controllers
         }
 
         [HttpGet("getallwithuser")]
-        public IActionResult GetAllRequestsWithUser()
+        public IActionResult GetAllRequestsWithUser([FromQuery] int? bloodBankId = null)
         {
-            var result = _bloodRequestBAL.GetAllRequestsWithUser();
+            var result = _bloodRequestBAL.GetAllRequestsWithUser(bloodBankId);
             return Ok(result);
+        }
+
+        [HttpGet("requestcounts")]
+        public IActionResult GetRequestCounts([FromQuery] int? bloodBankId = null)
+        {
+            try
+            {
+                BloodRequestCountModel counts = _bloodRequestBAL.GetRequestCounts(bloodBankId);
+                return Ok(counts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
         }
     }
 }
