@@ -61,5 +61,16 @@ namespace BloodLineAPI.Controllers
 
             return BadRequest(new { success = false, message = "Failed to submit blood request." });
         }
+
+        [HttpGet("GetAvailableBloodBanks")]
+        public ActionResult<List<AvailableBloodBankModel>> GetAvailableBloodBanks(string district, string bloodGroup, int unitsRequired)
+        {
+            var result = _bloodRequestBAL.GetAvailableBloodBanks(district, bloodGroup, unitsRequired);
+
+            if (result == null || result.Count == 0)
+                return NotFound("No blood banks found with the specified criteria.");
+
+            return Ok(result);
+        }
     }
 }

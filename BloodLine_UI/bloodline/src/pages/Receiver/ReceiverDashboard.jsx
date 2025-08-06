@@ -43,7 +43,7 @@ const ReceiverDashboard = () => {
               alignItems: 'center',
               paddingTop: '50px'
             }}
-            onClick={() => navigate('/receiver/request')}
+            onClick={() => navigate('/receiver-raiserequest')}
           >
             <div className="card-body text-center">
               <h4 className="card-title">Raise New Request</h4>

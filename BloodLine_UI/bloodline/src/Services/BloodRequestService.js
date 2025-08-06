@@ -53,10 +53,38 @@ export const updateRequestStatus = async (requestId, status) => {
 
 export const getAllRequestsWithUser = async () => {
   const token = localStorage.getItem("token");
-  const response = await axios.get(`${API_URL}/getallwithuser`, {
+  const response = await axios.get(`${API_BASE_URL}/getallwithuser`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   return response.data;
+};
+
+export const getAvailableBloodBanks = async (districtName, bloodGroup, unitsRequired) => {
+  try {
+    const response = await axios.get("https://localhost:7282/api/BloodRequest/GetAvailableBloodBanks", {
+      params: {
+        district: districtName,
+        bloodGroup: bloodGroup,
+        unitsRequired: unitsRequired,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        // add authorization if needed:
+        // Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching available blood banks:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+
+export const submitBloodRequest = (data) => {
+  return axios.post("https://localhost:7282/api/BloodRequest", data);
 };

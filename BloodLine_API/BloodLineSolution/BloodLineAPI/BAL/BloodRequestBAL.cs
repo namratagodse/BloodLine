@@ -151,5 +151,39 @@ namespace BloodLineAPI.BAL
                 }
             }
         }
+
+        public List<AvailableBloodBankModel> GetAvailableBloodBanks(string district, string bloodGroup, int unitsRequired)
+        {
+            List<AvailableBloodBankModel> banks = new List<AvailableBloodBankModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetAvailableBloodBanks", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@District", district);
+                    cmd.Parameters.AddWithValue("@BloodGroup", bloodGroup);
+                    cmd.Parameters.AddWithValue("@UnitsRequired", unitsRequired);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            banks.Add(new AvailableBloodBankModel
+                            {
+                                BloodBankId = Convert.ToInt32(reader["BloodBankId"]),
+                                BloodBankName = reader["BloodBankName"].ToString(),
+                                District = reader["District"].ToString(),
+                                BloodGroup = reader["BloodGroup"].ToString(),
+                                UnitsAvailable = Convert.ToInt32(reader["UnitsAvailable"])
+                            });
+                        }
+                    }
+                }
+            }
+
+            return banks;
         }
+    }
 }

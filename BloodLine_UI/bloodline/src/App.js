@@ -35,6 +35,7 @@ import DonorDashboard from './pages/Donor/DonorDashboard';
 import ReceiverRequests from './pages/Receiver/ReceiverRequests';
 import MakeDonation from './pages/Donor/MakeDonation';
 import MyDonations from './pages/Donor/MyDonations';
+import RaiseBloodRequest from './pages/Receiver/RaiseBloodRequest';
 
 function App() {
   const location = useLocation();
@@ -195,6 +196,15 @@ function App() {
         element={
           <PrivateRoute allowedRoles={['Receiver']}>
             < ReceiverRequests />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/receiver-raiserequest"
+        element={
+          <PrivateRoute allowedRoles={['Receiver']}>
+            < RaiseBloodRequest />
           </PrivateRoute>
         }
       />
