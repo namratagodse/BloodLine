@@ -8,9 +8,10 @@ import { insertDonation } from "../../Services/DonationService";
 import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
-
+import { useNavigate } from "react-router-dom"; // ✅ Added
 
 const MakeDonation = () => {
+  const navigate = useNavigate();
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [bloodBanks, setBloodBanks] = useState([]);
@@ -176,6 +177,12 @@ const handleDonationSubmit = async (e) => {
           </tbody>
         </table>
       )}
+
+      <div className="text-center mt-4">
+            <Button variant="secondary" onClick={() => navigate("/donor-dashboard")}>
+              Back to Dashboard
+            </Button>
+          </div>
 
       {/* Popup Modal */}
       <Modal show={showPopup} onHide={() => setShowPopup(false)} centered>

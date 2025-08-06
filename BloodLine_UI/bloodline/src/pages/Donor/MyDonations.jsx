@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { getDonationsByDonorId } from "../../Services/DonationService";
 import { Card, Container, Row, Col, Spinner, Alert } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom"; // ✅ Added
+import { Button } from "react-bootstrap";
 
 const MyDonations = () => {
+  const navigate = useNavigate();
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,7 +42,7 @@ const MyDonations = () => {
   }, [donorId]);
 
   return (
-    <div style={{ marginTop: "80px" }}>
+    <div style={{ marginTop: "80px", marginBottom: '50px' }}>
       <Container className="mt-5">
         <h2 className="text-center mb-2">My Donations</h2>
         <p className="text-center text-danger fw-bold mb-4">
@@ -79,7 +82,13 @@ const MyDonations = () => {
           </Row>
         )}
       </Container>
+      <div className="text-center mt-4">
+                  <Button variant="secondary" onClick={() => navigate("/donor-dashboard")}>
+                    Back to Dashboard
+                  </Button>
+                </div>
     </div>
+    
   );
 };
 
