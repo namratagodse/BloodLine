@@ -59,11 +59,13 @@ const ReceiverDashboard = () => {
             style={{
               backgroundColor: '#28a745',
               minHeight: '200px',
+              cursor: 'pointer',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               paddingTop: '50px'
             }}
+            onClick={() => navigate('/receiver-myrequests')}
           >
             <div className="card-body text-center">
               <h4 className="card-title">My Requests</h4>
