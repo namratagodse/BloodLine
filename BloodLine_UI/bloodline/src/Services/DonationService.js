@@ -16,3 +16,17 @@ export const insertDonation = async (donationData) => {
     throw error;
   }
 };
+
+export const getDonationsByDonorId = async (donorId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/GetDonationsByDonorId/${donorId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Donations Error:", error);
+    throw error;
+  }
+};

@@ -43,6 +43,7 @@ const DonorDashboard = () => {
               alignItems: 'center',
               paddingTop: '50px'
             }}
+            onClick={() => navigate('/donor-mydonations')}
           >
             <div className="card-body text-center">
               <h4 className="card-title">My Donations</h4>

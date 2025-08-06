@@ -1,5 +1,3 @@
-// src/pages/Donor/MakeDonation.jsx
-
 import React, { useEffect, useState } from "react";
 import {
   getAllStates,
@@ -7,6 +5,10 @@ import {
   getBloodBanksByDistrict,
 } from "../../Services/LocationService";
 import { insertDonation } from "../../Services/DonationService";
+import { Modal, Button } from "react-bootstrap";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+
 
 const MakeDonation = () => {
   const [states, setStates] = useState([]);
@@ -15,7 +17,7 @@ const MakeDonation = () => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedBloodBank, setSelectedBloodBank] = useState(null);
-  const [showInlineForm, setShowInlineForm] = useState(null); // bloodBankId of open form
+  const [showPopup, setShowPopup] = useState(false);
 
   const [donationDetails, setDonationDetails] = useState({
     unitsdonated: "",
@@ -67,42 +69,46 @@ const MakeDonation = () => {
 
   const handleDonateClick = (bank) => {
     setSelectedBloodBank(bank);
-    setShowInlineForm(bank.userID);
     setDonationDetails({
       unitsdonated: "",
       bloodGroup: "",
     });
+    setShowPopup(true);
   };
 
   const handleDonationInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "unitsdonated" && parseInt(value) > 3) return;
+
     setDonationDetails((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleDonationSubmit = async (e) => {
-    e.preventDefault();
+const handleDonationSubmit = async (e) => {
+  e.preventDefault();
 
-    const donationData = {
-      donorId: parseInt(getUserIdFromToken()),
-      bloodBankId: parseInt(selectedBloodBank.userID),
-      unitsdonated: parseInt(donationDetails.unitsdonated),
-      bloodGroup: donationDetails.bloodGroup,
-    };
-
-    try {
-      const response = await insertDonation(donationData);
-      console.log("Donation successful:", response);
-      // Reset or show success
-    } catch (error) {
-      console.error("Donation submission failed:", error);
-    }
+  const donationData = {
+    donorId: parseInt(getUserIdFromToken()),
+    bloodBankId: parseInt(selectedBloodBank.userID),
+    unitsdonated: parseInt(donationDetails.unitsdonated),
+    bloodGroup: donationDetails.bloodGroup,
   };
 
+  try {
+    const response = await insertDonation(donationData);
+    console.log("Donation successful:", response);
+    setShowPopup(false);
+    toast.success("Donated successfully!"); // ✅ Added toast here
+  } catch (error) {
+    console.error("Donation submission failed:", error);
+  }
+};
+
+
   return (
-    <div className="container mt-5">
+    <div className="container" style={{marginTop: '80px'}}>
       <h2>Make a New Donation</h2>
 
       {/* State Dropdown */}
@@ -164,41 +170,55 @@ const MakeDonation = () => {
                     >
                       Donate
                     </button>
-
-                    {showInlineForm === bank.userID && (
-                      <form
-                        onSubmit={handleDonationSubmit}
-                        className="mt-2 d-flex flex-column"
-                      >
-                        <input
-                          type="number"
-                          name="unitsdonated"
-                          placeholder="Units"
-                          className="form-control mb-2"
-                          value={donationDetails.unitsdonated}
-                          onChange={handleDonationInputChange}
-                          required
-                        />
-                        <input
-                          type="text"
-                          name="bloodGroup"
-                          placeholder="Blood Group"
-                          className="form-control mb-2"
-                          value={donationDetails.bloodGroup}
-                          onChange={handleDonationInputChange}
-                          required
-                        />
-                        <button type="submit" className="btn btn-success">
-                          Submit Donation
-                        </button>
-                      </form>
-                    )}
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
       )}
+
+      {/* Popup Modal */}
+      <Modal show={showPopup} onHide={() => setShowPopup(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Submit Donation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleDonationSubmit}>
+            <div className="mb-3">
+              <input
+                type="number"
+                name="unitsdonated"
+                placeholder="Units (Max 2 as 1 unit = 300ml)"
+                className="form-control"
+                value={donationDetails.unitsdonated}
+                onChange={handleDonationInputChange}
+                required
+                min={1}
+                max={2}
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="text"
+                name="bloodGroup"
+                placeholder="Blood Group"
+                className="form-control"
+                value={donationDetails.bloodGroup}
+                onChange={handleDonationInputChange}
+                required
+              />
+            </div>
+            <div className="text-end">
+              <Button variant="secondary" onClick={() => setShowPopup(false)}>
+                Cancel
+              </Button>{" "}
+              <Button type="submit" variant="success">
+                Submit
+              </Button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

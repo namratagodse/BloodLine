@@ -84,7 +84,9 @@ namespace BloodLineAPI.BAL
                         UnitsDonated = reader.GetInt32(reader.GetOrdinal("UnitsDonated")),
                         DonationDate = reader.IsDBNull(reader.GetOrdinal("DonationDate"))
                                         ? null
-                                        : reader.GetDateTime(reader.GetOrdinal("DonationDate"))
+                                        : reader.GetDateTime(reader.GetOrdinal("DonationDate")),
+                        BloodBankName = reader["BloodBankName"].ToString() 
+
                     });
                 }
             }

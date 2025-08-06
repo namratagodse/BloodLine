@@ -34,6 +34,7 @@ import ReceiverDashboard from './pages/Receiver/ReceiverDashboard';
 import DonorDashboard from './pages/Donor/DonorDashboard';
 import ReceiverRequests from './pages/Receiver/ReceiverRequests';
 import MakeDonation from './pages/Donor/MakeDonation';
+import MyDonations from './pages/Donor/MyDonations';
 
 function App() {
   const location = useLocation();
@@ -216,6 +217,14 @@ function App() {
         }
       />
 
+      <Route
+        path="/donor-mydonations"
+        element={
+          <PrivateRoute allowedRoles={['Donor']}>
+            <MyDonations />
+          </PrivateRoute>
+        }
+      />
         {/* Unauthorized Access */}
         <Route path="/unauthorized" element={<Unauthorized />} />
 

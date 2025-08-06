@@ -8,5 +8,7 @@
         public string BloodGroup { get; set; }
         public int UnitsDonated { get; set; }
         public DateTime? DonationDate { get; set; }     // Defaulted to GETDATE() in DB
+        public string? BloodBankName { get; set; }  // <- ✅ New
+
     }
 }
