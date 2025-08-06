@@ -1,0 +1,12 @@
+﻿namespace BloodLineAPI.Model
+{
+    public class BloodDonationModel
+    {
+        public int? DonationID { get; set; }           // Primary Key
+        public int DonorID { get; set; }               // Foreign Key to UserMaster
+        public int BloodBankID { get; set; }           // Foreign Key to UserMaster (role: blood bank)
+        public string BloodGroup { get; set; }
+        public int UnitsDonated { get; set; }
+        public DateTime? DonationDate { get; set; }     // Defaulted to GETDATE() in DB
+    }
+}

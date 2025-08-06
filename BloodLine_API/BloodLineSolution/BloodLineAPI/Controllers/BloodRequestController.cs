@@ -50,5 +50,16 @@ namespace BloodLineAPI.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
+
+        [HttpPost]
+        public IActionResult InsertBloodRequest([FromBody] BloodRequestModel model)
+        {
+            if (_bloodRequestBAL.InsertBloodRequest(model))
+            {
+                return Ok(new { success = true, message = "Blood request submitted successfully." });
+            }
+
+            return BadRequest(new { success = false, message = "Failed to submit blood request." });
+        }
     }
 }

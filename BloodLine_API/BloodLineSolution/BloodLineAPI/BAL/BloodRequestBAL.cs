@@ -126,5 +126,30 @@ namespace BloodLineAPI.BAL
 
             return counts;
         }
-    }
+
+        public bool InsertBloodRequest(BloodRequestModel model)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_BloodRequest_CRUD", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Action", "INSERT");
+                    cmd.Parameters.AddWithValue("@RequesterId", model.RequesterId);
+                    cmd.Parameters.AddWithValue("@BloodBankId", model.BloodBankId ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@BloodGroup", model.BloodGroup ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@UnitsRequired", model.UnitsRequired);
+                    cmd.Parameters.AddWithValue("@RequiredDate", model.RequiredDate);
+                    cmd.Parameters.AddWithValue("@Reason", model.Reason ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Status", model.Status ?? "Pending");
+
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    return rowsAffected > 0;
+                }
+            }
+        }
+        }
 }

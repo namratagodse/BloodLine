@@ -154,5 +154,23 @@ namespace BloodLine_Backend.Controllers
             return Ok(counts);
         }
 
+        [HttpGet("GetBloodBanksByDistrict/{districtName}")]
+        public IActionResult GetBloodBanksByDistrict(string districtName)
+        {
+            try
+            {
+                var bloodBanks = _userBAL.GetBloodBanksByDistrict(districtName);
+                if (bloodBanks == null || bloodBanks.Count == 0)
+                {
+                    return NotFound("No blood banks found for the given district.");
+                }
+
+                return Ok(bloodBanks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
     }
-}
+    }

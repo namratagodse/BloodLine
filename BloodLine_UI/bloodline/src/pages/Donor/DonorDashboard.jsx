@@ -22,7 +22,7 @@ const DonorDashboard = () => {
               alignItems: 'center',
               paddingTop: '50px'
             }}
-            onClick={() => navigate('/donor/donate')}
+            onClick={() => navigate('/donor-newdonation')}
           >
             <div className="card-body text-center">
               <h4 className="card-title">Make New Donation</h4>

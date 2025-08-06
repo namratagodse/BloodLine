@@ -324,6 +324,39 @@ namespace BloodLineAPI.BAL
             return stats;
         }
 
+        public List<UserModel> GetBloodBanksByDistrict(string districtName)
+        {
+            List<UserModel> bloodBanks = new List<UserModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetBloodBanksByDistrict", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@DistrictName", districtName);
+
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        bloodBanks.Add(new UserModel
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            FullName = reader["FullName"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            PhoneNumber = reader["PhoneNumber"].ToString(),
+                            Address = reader["Address"].ToString(),
+                            State = reader["State"].ToString(),
+                            District = reader["District"].ToString(),
+                            City = reader["City"].ToString()
+                        });
+                    }
+                }
+            }
+
+            return bloodBanks;
+        }
 
     }
 }
