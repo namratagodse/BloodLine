@@ -32,10 +32,10 @@ import PendingRequests from './pages/BloodBank/PendingRequest';
 import TotalRequests from './pages/BloodBank/TotalRequest';
 import ReceiverDashboard from './pages/Receiver/ReceiverDashboard';
 import DonorDashboard from './pages/Donor/DonorDashboard';
-import ReceiverRequests from './pages/Receiver/ReceiverRequests';
 import MakeDonation from './pages/Donor/MakeDonation';
 import MyDonations from './pages/Donor/MyDonations';
 import RaiseBloodRequest from './pages/Receiver/RaiseBloodRequest';
+import AllBloodRequests from './pages/Admin/AllBloodRequests';
 
 function App() {
   const location = useLocation();
@@ -192,19 +192,19 @@ function App() {
       />
 
       <Route
-        path="/receiver-myrequests"
-        element={
-          <PrivateRoute allowedRoles={['Receiver']}>
-            < ReceiverRequests />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
         path="/receiver-raiserequest"
         element={
           <PrivateRoute allowedRoles={['Receiver']}>
             < RaiseBloodRequest />
+          </PrivateRoute>
+        }
+      />
+
+        <Route
+        path="/admin-allBloodRequests"
+        element={
+          <PrivateRoute allowedRoles={['Admin']}>
+            < AllBloodRequests />
           </PrivateRoute>
         }
       />

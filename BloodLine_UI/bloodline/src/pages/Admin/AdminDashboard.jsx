@@ -13,6 +13,7 @@ function AdminDashboard() {
     receiverCount: 0,
     bloodBankCount: 0,
     bloodInventoryCount: 0,
+    bloodRequests: 0,
   });
 
   const [loading, setLoading] = useState(true);
@@ -47,6 +48,7 @@ function AdminDashboard() {
     { title: 'Receivers', value: stats.receiverCount, route: '/admin-allreceivers', color: 'warning' },
     { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin-allbloodbanks', color: 'danger' },
     { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin-allbloodinventory', color: 'dark' },
+    { title: 'Blood Requests', value: stats.bloodRequests, route: '/admin-allBloodRequests', color: 'dark' },
   ];
 
   const handleCardClick = (route) => {

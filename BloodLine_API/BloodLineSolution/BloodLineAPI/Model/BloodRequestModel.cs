@@ -2,7 +2,7 @@
 {
     public class BloodRequestModel
     {
-        public int RequestId { get; set; }
+        public int? RequestId { get; set; }
         public int RequesterId { get; set; }
         public string? RequesterName { get; set; }
         public int? BloodBankId { get; set; } 

@@ -72,5 +72,19 @@ namespace BloodLineAPI.Controllers
 
             return Ok(result);
         }
-    }
+
+        [HttpGet("GetAllRequests")]
+        public ActionResult<List<BloodRequestModel>> GetAllRequests()
+        {
+            try
+            {
+                var requests = _bloodRequestBAL.GetAllBloodRequests();
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error fetching requests.", error = ex.Message });
+            }
+        }
+        }
 }

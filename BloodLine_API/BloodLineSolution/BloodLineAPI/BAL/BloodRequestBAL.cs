@@ -1,6 +1,7 @@
 ﻿using BloodLineAPI.Model;
-using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace BloodLineAPI.BAL
 {
@@ -184,6 +185,40 @@ namespace BloodLineAPI.BAL
             }
 
             return banks;
+        }
+
+        public List<BloodRequestModel> GetAllBloodRequests()
+        {
+            List<BloodRequestModel> requests = new List<BloodRequestModel>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_GetBloodRequestsWithDetails", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                con.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    requests.Add(new BloodRequestModel
+                    {
+                        RequestId = Convert.ToInt32(dr["RequestId"]),
+                        RequesterId = Convert.ToInt32(dr["RequesterId"]),
+                        RequesterName = dr["RequesterName"].ToString(),
+                        BloodBankId = dr["BloodBankId"] != DBNull.Value ? Convert.ToInt32(dr["BloodBankId"]) : null,
+                        BloodBankName = dr["BloodBankName"].ToString(),
+                        BloodGroup = dr["BloodGroup"].ToString(),
+                        UnitsRequired = Convert.ToInt32(dr["UnitsRequired"]),
+                        RequiredDate = Convert.ToDateTime(dr["RequiredDate"]),
+                        Reason = dr["Reason"].ToString(),
+                        Status = dr["Status"].ToString(),
+                        CreatedAt = dr["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(dr["CreatedAt"]) : null
+                    });
+                }
+            }
+
+            return requests;
         }
     }
 }
