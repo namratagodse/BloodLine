@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getDonationsByDonorId } from "../../Services/DonationService";
-import { Card, Container, Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Card, Container, Row, Col, Table, Spinner, Alert } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom"; // ✅ Added
 import { Button } from "react-bootstrap";
@@ -62,24 +62,28 @@ const MyDonations = () => {
             No donations yet.
           </Alert>
         ) : (
-          <Row>
+                <Table striped bordered hover responsive className="mt-3">
+        <thead>
+            <tr className="text-center">
+            <th>Sr. No</th>
+            <th>Units Donated</th>
+            <th>Blood Group</th>
+            <th>Donation Date</th>
+            <th>Blood Bank</th>
+            </tr>
+        </thead>
+        <tbody>
             {donations.map((donation, index) => (
-              <Col key={index} md={12} className="mb-4">
-                <Card className="shadow border rounded">
-                  <Card.Body style={{ backgroundColor: "#FFF5F7" }}>
-                    <Card.Title style={{ color: "#9B1C2E" }}>
-                      Donation #{index + 1}
-                    </Card.Title>
-                    <hr />
-                    <p><strong>Units Donated:</strong> {donation.unitsDonated}</p>
-                    <p><strong>Blood Group:</strong> {donation.bloodGroup}</p>
-                    <p><strong>Donation Date:</strong> {new Date(donation.donationDate).toLocaleDateString()}</p>
-                    <p><strong>Blood Bank:</strong> {donation.bloodBankName || "N/A"}</p>
-                  </Card.Body>
-                </Card>
-              </Col>
+            <tr key={index} className="text-center">
+                <td>{index + 1}</td>
+                <td>{donation.unitsDonated}</td>
+                <td>{donation.bloodGroup}</td>
+                <td>{new Date(donation.donationDate).toLocaleDateString()}</td>
+                <td>{donation.bloodBankName || "N/A"}</td>
+            </tr>
             ))}
-          </Row>
+        </tbody>
+        </Table>
         )}
       </Container>
       <div className="text-center mt-4">
