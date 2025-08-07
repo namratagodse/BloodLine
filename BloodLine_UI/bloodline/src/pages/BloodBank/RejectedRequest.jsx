@@ -2,30 +2,41 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Table, Spinner, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const RejectedRequest = () => {
   const [rejectedRequests, setRejectedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchRejectedRequests = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "https://localhost:7282/api/BloodRequest/getbystatuswithuser/Rejected",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setRejectedRequests(response.data);
-    } catch (error) {
-      console.error("Error fetching rejected requests:", error);
-    } finally {
-      setLoading(false);
+const fetchRejectedRequests = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found.");
+      return;
     }
-  };
+
+    const decoded = jwtDecode(token);
+    const bloodBankId = decoded.UserID; // 🔑 assuming userid is your BloodBankId
+
+    const response = await axios.get(
+      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Rejected/${bloodBankId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setRejectedRequests(response.data);
+  } catch (error) {
+    console.error("Error fetching rejected requests:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchRejectedRequests();

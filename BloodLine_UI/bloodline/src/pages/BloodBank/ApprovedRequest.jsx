@@ -12,19 +12,19 @@ const ApprovedRequest = () => {
 const fetchApprovedRequests = async () => {
   try {
     const token = localStorage.getItem("token");
-      const decoded = jwtDecode(token);
-    const bloodBankId = decoded.UserId; // Or adjust based on your token payload
+
+    if (!token) {
+      console.error("No token found.");
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    const bloodBankId = decoded.UserID; // 🔑 assuming userid is your BloodBankId
 
     const response = await axios.get(
-      "https://localhost:7282/api/BloodRequest",
-      {
-        action: "GETBYSTATUSWITHUSER",
-        status: "Approved",
-        bloodBankId: bloodBankId
-      },
+      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Approved/${bloodBankId}`,
       {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
