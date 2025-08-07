@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const AllBloodRequests = () => {
+const MyRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,9 +21,9 @@ const AllBloodRequests = () => {
         }
 
         const decoded = jwtDecode(token);
-        const requesterId = decoded.userid;
+        const requesterId = decoded.UserID;
 
-        const response = await axios.get(`https://localhost:7282/api/BloodRequest/GetAllRequests`);
+        const response = await axios.get(`https://localhost:7282/api/BloodRequest/GetRequestsByRequesterId/${requesterId}`);
         setRequests(response.data);
       } catch (err) {
         setError("Failed to load requests");
@@ -44,7 +44,7 @@ const AllBloodRequests = () => {
   };
 
   return (
-    <Container style={{marginTop: '60px', marginBottom: '80px'}}>
+    <Container style={{marginTop: '80px', marginBottom: '80px'}}>
       <h2 className="text-center mb-4">My Blood Requests</h2>
 
       {loading ? (
@@ -98,7 +98,7 @@ const AllBloodRequests = () => {
       )}
 
       <div className="text-center mt-5">
-        <Button variant="secondary" onClick={() => navigate("/admin-dashboard")}>
+        <Button variant="secondary" onClick={() => navigate("/receiver-dashboard")}>
           Back to Dashboard
         </Button>
       </div>
@@ -106,4 +106,4 @@ const AllBloodRequests = () => {
   );
 };
 
-export default AllBloodRequests;
+export default MyRequests;

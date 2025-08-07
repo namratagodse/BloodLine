@@ -35,16 +35,18 @@ namespace BloodLineAPI.BAL
                     {
                         RequestId = Convert.ToInt32(reader["RequestId"]),
                         RequesterId = Convert.ToInt32(reader["RequesterId"]),
-                        RequesterName = reader["RequesterName"].ToString(),
-                        BloodGroup = reader["BloodGroup"].ToString(),
+                        RequesterName = reader["RequesterName"]?.ToString(),
+                        BloodBankId = reader["BloodBankId"] != DBNull.Value ? Convert.ToInt32(reader["BloodBankId"]) : (int?)null,
+                        BloodBankName = reader["BloodBankName"]?.ToString(),
+                        BloodGroup = reader["BloodGroup"]?.ToString(),
                         UnitsRequired = Convert.ToInt32(reader["UnitsRequired"]),
                         RequiredDate = Convert.ToDateTime(reader["RequiredDate"]),
-                        Reason = reader["Reason"].ToString(),
-                        Status = reader["Status"].ToString(),
-                        CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                        Reason = reader["Reason"]?.ToString(),
+                        Status = reader["Status"]?.ToString(),
+                        CreatedAt = reader["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedAt"]) : (DateTime?)null
                     });
-                }
-                conn.Close();
+            }
+            conn.Close();
             }
 
             return list;
@@ -215,6 +217,41 @@ namespace BloodLineAPI.BAL
                         Status = dr["Status"].ToString(),
                         CreatedAt = dr["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(dr["CreatedAt"]) : null
                     });
+                }
+            }
+
+            return requests;
+        }
+
+        public List<BloodRequestModel> GetRequestsByRequesterId(int requesterId)
+        {
+            List<BloodRequestModel> requests = new List<BloodRequestModel>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_GetBloodRequestsByRequester", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@RequesterId", requesterId);
+
+                con.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    BloodRequestModel request = new BloodRequestModel
+                    {
+                        RequestId = Convert.ToInt32(reader["RequestId"]),
+                        RequesterId = Convert.ToInt32(reader["RequesterId"]),
+                        RequesterName = reader["RequesterName"].ToString(),
+                        BloodBankId = Convert.ToInt32(reader["BloodBankId"]),
+                        BloodBankName = reader["BloodBankName"].ToString(),
+                        BloodGroup = reader["BloodGroup"].ToString(),
+                        UnitsRequired = Convert.ToInt32(reader["UnitsRequired"]),
+                        RequiredDate = Convert.ToDateTime(reader["RequiredDate"]),
+                        Reason = reader["Reason"].ToString(),
+                        Status = reader["Status"]?.ToString(),
+                        CreatedAt = reader["CreatedAt"] == DBNull.Value ? null : (DateTime?)Convert.ToDateTime(reader["CreatedAt"])
+                    };
+                    requests.Add(request);
                 }
             }
 

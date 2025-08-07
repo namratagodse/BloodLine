@@ -11,6 +11,7 @@ import {
   Button
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // make sure you import this
 
 const PendingRequest = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -19,25 +20,34 @@ const PendingRequest = () => {
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
 
-  const fetchPendingRequests = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "https://localhost:7282/api/BloodRequest/getbystatuswithuser/Pending",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setPendingRequests(response.data);
-    } catch (error) {
-      console.error("Error fetching pending requests:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchPendingRequests = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
+    if (!token) {
+      console.error("No token found.");
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    const bloodBankId = decoded.UserID; // 🔑 assuming userid is your BloodBankId
+
+    const response = await axios.get(
+      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Pending/${bloodBankId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setPendingRequests(response.data);
+  } catch (error) {
+    console.error("Error fetching pending requests:", error);
+  } finally {
+    setLoading(false);
+  }
+};
  const handleStatusUpdate = async (requestId, newStatus) => {
   try {
     const token = localStorage.getItem("token");

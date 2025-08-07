@@ -16,12 +16,13 @@ namespace BloodLineAPI.Controllers
             _bloodRequestBAL = new BloodRequestBAL(configuration);
         }
 
-        [HttpGet("getbystatuswithuser/{status}")]
-        public IActionResult GetRequestsByStatusWithUser(string status, [FromQuery] int? bloodBankId = null)
+        [HttpGet("getbystatuswithuser/{status}/{bloodBankId}")]
+        public IActionResult GetRequestsByStatusWithUser(string status, int bloodBankId)
         {
             var result = _bloodRequestBAL.GetRequestsByStatusWithUser(status, bloodBankId);
             return Ok(result);
         }
+
 
         [HttpPost("updatestatus")]
         public IActionResult UpdateStatus([FromBody] UpdateRequestModel model)
@@ -86,5 +87,19 @@ namespace BloodLineAPI.Controllers
                 return StatusCode(500, new { message = "Error fetching requests.", error = ex.Message });
             }
         }
+
+        [HttpGet("GetRequestsByRequesterId/{requesterId}")]
+        public IActionResult GetRequestsByRequesterId(int requesterId)
+        {
+            try
+            {
+                var requests = _bloodRequestBAL.GetRequestsByRequesterId(requesterId);
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Error fetching user requests.", error = ex.Message });
+            }
         }
+    }
 }

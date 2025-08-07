@@ -36,6 +36,7 @@ import MakeDonation from './pages/Donor/MakeDonation';
 import MyDonations from './pages/Donor/MyDonations';
 import RaiseBloodRequest from './pages/Receiver/RaiseBloodRequest';
 import AllBloodRequests from './pages/Admin/AllBloodRequests';
+import MyRequests from './pages/Receiver/MyRequests';
 
 function App() {
   const location = useLocation();
@@ -205,6 +206,15 @@ function App() {
         element={
           <PrivateRoute allowedRoles={['Admin']}>
             < AllBloodRequests />
+          </PrivateRoute>
+        }
+      />
+
+        <Route
+        path="/receiver-myrequests"
+        element={
+          <PrivateRoute allowedRoles={['Receiver']}>
+            < MyRequests />
           </PrivateRoute>
         }
       />
