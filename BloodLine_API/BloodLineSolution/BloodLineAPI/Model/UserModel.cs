@@ -20,6 +20,7 @@ namespace BloodLineAPI.Model
         public string Pincode { get; set; }
         public string Role { get; set; }
         public bool? IsActive { get; set; }
+        public string? AadhaarNumber { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

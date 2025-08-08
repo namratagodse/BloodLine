@@ -38,6 +38,7 @@ namespace BloodLineAPI.BAL
                 cmd.Parameters.AddWithValue("@Pincode", user.Pincode ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Role", user.Role ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@IsActive", user.IsActive ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@AadhaarNumber", user.AadhaarNumber ?? (object)DBNull.Value);
 
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -106,7 +107,9 @@ namespace BloodLineAPI.BAL
                             State = reader["State"]?.ToString(),
                             Pincode = reader["Pincode"]?.ToString(),
                             Role = reader["Role"]?.ToString(),
-                            IsActive = Convert.ToBoolean(reader["IsActive"])
+                            IsActive = Convert.ToBoolean(reader["IsActive"]),
+                            AadhaarNumber = reader["AadhaarNumber"]?.ToString()
+
                         });
                     }
                 }
@@ -145,7 +148,8 @@ namespace BloodLineAPI.BAL
                     State = reader["State"]?.ToString(),
                     Pincode = reader["Pincode"]?.ToString(),
                     Role = reader["Role"]?.ToString(),
-                    IsActive = Convert.ToBoolean(reader["IsActive"])
+                    IsActive = Convert.ToBoolean(reader["IsActive"]),
+                    AadhaarNumber = reader["AadhaarNumber"]?.ToString()
                 });
             }
         }
@@ -217,6 +221,7 @@ namespace BloodLineAPI.BAL
                 cmd.Parameters.AddWithValue("@Pincode", user.Pincode ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Role", user.Role ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@IsActive", user.IsActive);
+                cmd.Parameters.AddWithValue("@AadhaarNumber", user.AadhaarNumber ?? (object)DBNull.Value);
 
                 con.Open();
                 var result = cmd.ExecuteScalar();
@@ -290,6 +295,7 @@ namespace BloodLineAPI.BAL
                         State = reader["State"] != DBNull.Value ? reader["State"].ToString() : null,
                         Pincode = reader["Pincode"] != DBNull.Value ? reader["Pincode"].ToString() : null,
                         IsActive = reader["IsActive"] != DBNull.Value && Convert.ToBoolean(reader["IsActive"]),
+                        AadhaarNumber = reader["AadhaarNumber"] != DBNull.Value ? reader["AadhaarNumber"].ToString() : null
                     };
                 }
 

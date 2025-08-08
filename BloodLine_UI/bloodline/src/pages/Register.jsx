@@ -10,6 +10,7 @@ function Register() {
     fullName: '',
     email: '',
     phone: '',
+    aadhaar: '',           // Added Aadhaar here
     gender: '',
     dob: '',
     bloodGroup: '',
@@ -51,8 +52,9 @@ function Register() {
 
   const validateForm = () => {
     const newErrors = {};
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8}$/; // updated length to exactly 8
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8}$/; // exactly 8 chars, one uppercase, number, special char
     const phoneRegex = /^[0-9]{10}$/; // only 10 digits
+    const aadhaarRegex = /^[0-9]{12}$/; // exactly 12 digits
     const pincodeRegex = /^[0-9]{6}$/; // only 6 digits
     const emailRegex = /^[a-z0-9]+@[a-z0-9]+\.(com)$/; // lowercase, digits, must end with .com
 
@@ -67,6 +69,12 @@ function Register() {
       newErrors.phone = 'Phone number is required';
     } else if (!phoneRegex.test(formData.phone)) {
       newErrors.phone = 'Phone number must be exactly 10 digits';
+    }
+
+    if (!formData.aadhaar.trim()) {
+      newErrors.aadhaar = 'Aadhaar Number is required';
+    } else if (!aadhaarRegex.test(formData.aadhaar)) {
+      newErrors.aadhaar = 'Aadhaar Number must be exactly 12 digits';
     }
 
     if (!formData.gender) newErrors.gender = 'Gender is required';
@@ -105,7 +113,40 @@ function Register() {
       return;
     }
 
-    setFormData({ ...formData, [name]: value });
+    if (name === 'phone') {
+      // Only digits, max length 10
+      const onlyNums = value.replace(/[^0-9]/g, '').slice(0, 10);
+      setFormData((prev) => ({ ...prev, phone: onlyNums }));
+      return;
+    }
+
+    if (name === 'aadhaar') {
+      // Only digits, max length 12
+      const onlyNums = value.replace(/[^0-9]/g, '').slice(0, 12);
+      setFormData((prev) => ({ ...prev, aadhaar: onlyNums }));
+      return;
+    }
+
+    if (name === 'email') {
+      // only lowercase letters, numbers, @ and .
+      const val = value.replace(/[^a-z0-9@.]/g, '');
+      setFormData({ ...formData, email: val });
+      return;
+    }
+
+    if (name === 'pincode') {
+      const onlyNums = value.replace(/[^0-9]/g, '').slice(0, 6);
+      setFormData((prev) => ({ ...prev, pincode: onlyNums }));
+      return;
+    }
+
+    if (name === 'password' || name === 'confirmPassword') {
+      const val = value.slice(0, 8);
+      setFormData((prev) => ({ ...prev, [name]: val }));
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -120,6 +161,7 @@ function Register() {
           fullName: '',
           email: '',
           phone: '',
+          aadhaar: '',
           gender: '',
           dob: '',
           bloodGroup: '',
@@ -180,11 +222,7 @@ function Register() {
                         type="text"
                         name="email"
                         value={formData.email}
-                        onChange={(e) => {
-                          // only lowercase letters, numbers, @ and .
-                          const val = e.target.value.replace(/[^a-z0-9@.]/g, '');
-                          setFormData({ ...formData, email: val });
-                        }}
+                        onChange={handleChange}
                         isInvalid={!!errors.email}
                       />
                       <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
@@ -201,10 +239,7 @@ function Register() {
                         name="phone"
                         value={formData.phone}
                         maxLength={10}
-                        onChange={(e) => {
-                          const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-                          setFormData({ ...formData, phone: onlyNums });
-                        }}
+                        onChange={handleChange}
                         isInvalid={!!errors.phone}
                       />
                       <Form.Control.Feedback type="invalid">
@@ -213,6 +248,24 @@ function Register() {
                     </Form.Group>
                   </Col>
 
+                  {/* Added Aadhaar Number field here */}
+                  <Col md={6}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Aadhaar Number*</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="aadhaar"
+                        value={formData.aadhaar}
+                        maxLength={12}
+                        onChange={handleChange}
+                        isInvalid={!!errors.aadhaar}
+                      />
+                      <Form.Control.Feedback type="invalid">{errors.aadhaar}</Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Gender*</Form.Label>
@@ -225,9 +278,7 @@ function Register() {
                       <Form.Control.Feedback type="invalid">{errors.gender}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-                </Row>
 
-                <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Date of Birth*</Form.Label>
@@ -235,7 +286,9 @@ function Register() {
                       <Form.Control.Feedback type="invalid">{errors.dob}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
+                </Row>
 
+                <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Blood Group*</Form.Label>
@@ -306,10 +359,7 @@ function Register() {
                         name="pincode"
                         value={formData.pincode}
                         maxLength={6}
-                        onChange={(e) => {
-                          const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-                          setFormData({ ...formData, pincode: onlyNums });
-                        }}
+                        onChange={handleChange}
                         isInvalid={!!errors.pincode}
                       />
                       <Form.Control.Feedback type="invalid">{errors.pincode}</Form.Control.Feedback>
@@ -324,11 +374,7 @@ function Register() {
                         name="password"
                         value={formData.password}
                         maxLength={8}
-                        onChange={(e) => {
-                          // Limit to 8 chars
-                          const val = e.target.value.slice(0, 8);
-                          setFormData({ ...formData, password: val });
-                        }}
+                        onChange={handleChange}
                         isInvalid={!!errors.password}
                       />
                       <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
@@ -343,10 +389,7 @@ function Register() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     maxLength={8}
-                    onChange={(e) => {
-                      const val = e.target.value.slice(0, 8);
-                      setFormData({ ...formData, confirmPassword: val });
-                    }}
+                    onChange={handleChange}
                     isInvalid={!!errors.confirmPassword}
                   />
                   <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
