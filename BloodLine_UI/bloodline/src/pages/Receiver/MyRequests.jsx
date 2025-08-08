@@ -64,9 +64,7 @@ const MyRequests = () => {
         <thead>
             <tr className="text-center">
             <th>Sr.No</th>
-            <th>Requester ID</th>
             <th>Requester</th>
-            <th>BloodBank ID</th>
             <th>Blood Bank</th>
             <th>Units</th>
             <th>Blood Group</th>
@@ -80,9 +78,7 @@ const MyRequests = () => {
             {requests.map((req, index) => (
             <tr key={req.requestId} className="text-center">
                 <td>{index + 1}</td>
-                <td>{req.requestId}</td>
                 <td>{req.requesterName}</td>
-                <td>{req.bloodBankId}</td>
                 <td>{req.bloodBankName}</td>
                 <td>{req.unitsRequired}</td>
                 <td>{req.bloodGroup}</td>

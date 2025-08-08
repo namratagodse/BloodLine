@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddUser = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ const AddUser = () => {
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [selectedStateId, setSelectedStateId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -46,78 +48,167 @@ const AddUser = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "state") {
-      const selected = states.find((s) => s.stateName === value);
-      setSelectedStateId(selected?.stateId || null);
+    // Restrict phone number to digits only (max 10)
+    if (name === "phoneNumber") {
+      if (/^\d{0,10}$/.test(value)) {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+      return;
     }
 
+    // Restrict pincode to digits only (max 6)
+    if (name === "pincode") {
+      if (/^\d{0,6}$/.test(value)) {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+      return;
+    }
+
+    // State selection logic
+    if (name === "state") {
+      if (value) {
+        const selected = states.find((s) => s.stateName === value);
+        setSelectedStateId(selected?.stateId || null);
+      } else {
+        setSelectedStateId(null);
+        setDistricts([]);
+      }
+    }
+
+    // Default update
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
+  const validateForm = () => {
+    const errors = {};
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/; // min 8 chars
+    const phoneRegex = /^[0-9]{10}$/;
+    const cityRegex = /^[A-Za-z\s]+$/;
+    const emailRegex = /^[A-Za-z0-9]+@[A-Za-z0-9]+\.com$/;
+    if (!formData.role) errors.role = "Role is required";
+    if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
 
-  if (formData.password !== formData.confirmPassword) {
-    toast.error("Passwords do not match.");
-    return;
-  }
-
-  const payload = {
-  FullName: formData.fullName,
-  Email: formData.email,
-  PhoneNumber: formData.phoneNumber,
-  Address: formData.address,
-  State: formData.state,
-  District: formData.district,
-  City: formData.city,
-  Pincode: formData.pincode,
-  Role: formData.role,
-  PasswordHash: formData.password,
-  Action: "Insert",
-};
-
-if (formData.role !== "BloodBank") {
-  payload.Gender = formData.gender;
-  payload.DateOfBirth = formData.dateOfBirth;
-  payload.BloodGroup = formData.bloodGroup;
-}
-
-
-  try {
-    const response = await axios.post(
-      "https://localhost:7282/api/user/register",
-      payload
-    );
-
-    if (response.status === 200) {
-      toast.success("User registered successfully!");
-      setFormData({
-        fullName: "",
-        email: "",
-        phoneNumber: "",
-        gender: "",
-        dateOfBirth: "",
-        bloodGroup: "",
-        address: "",
-        state: "",
-        district: "",
-        city: "",
-        pincode: "",
-        role: "",
-        password: "",
-        confirmPassword: "",
-      });
-      setSelectedStateId(null);
-      setDistricts([]);
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      errors.email = "Email must contain @ and end with .com";
     }
-  } catch (error) {
-    console.error("Registration failed:", error);
-    toast.error("Error: " + (error.response?.data?.message || "Something went wrong"));
-  }
-};
+
+    if (!formData.phoneNumber.trim()) {
+      errors.phoneNumber = "Phone number is required";
+    } else if (!phoneRegex.test(formData.phoneNumber)) {
+      errors.phoneNumber = "Phone number must be exactly 10 digits";
+    }
+
+    if (formData.role !== "BloodBank") {
+      if (!formData.gender) errors.gender = "Gender is required";
+      if (!formData.dateOfBirth) {
+        errors.dateOfBirth = "Date of Birth is required";
+      } else {
+        // Age check
+        const today = new Date();
+        const dob = new Date(formData.dateOfBirth);
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+        if (age < 18) {
+          errors.dateOfBirth =
+            "You must be at least 18 years old to register";
+        }
+      }
+      if (!formData.bloodGroup) errors.bloodGroup = "Blood Group is required";
+    }
+
+    if (!formData.address.trim()) errors.address = "Address is required";
+    if (!formData.state) errors.state = "State is required";
+    if (!formData.district) errors.district = "District is required";
+    if (!formData.city.trim()) {
+      errors.city = "City is required";
+    } else if (!cityRegex.test(formData.city)) {
+      errors.city = "City must contain only letters";
+    }
+    if (!formData.pincode.trim()) errors.pincode = "Pincode is required";
+
+    if (!formData.password || !passwordRegex.test(formData.password)) {
+      errors.password =
+        "Password must be at least 8 characters and contain a capital letter, number, and special character";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    return errors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach((err) => toast.error(err));
+      return;
+    }
+
+    const payload = {
+      FullName: formData.fullName,
+      Email: formData.email,
+      PhoneNumber: formData.phoneNumber,
+      Address: formData.address,
+      State: formData.state,
+      District: formData.district,
+      City: formData.city,
+      Pincode: formData.pincode,
+      Role: formData.role,
+      Password: formData.password,
+      Action: "Insert",
+    };
+
+    if (formData.role !== "BloodBank") {
+      payload.Gender = formData.gender;
+      payload.DateOfBirth = formData.dateOfBirth;
+      payload.BloodGroup = formData.bloodGroup;
+    }
+
+    try {
+      const response = await axios.post(
+        "https://localhost:7282/api/user/register",
+        payload
+      );
+
+      if (response.status === 200) {
+        toast.success("User registered successfully!");
+        setFormData({
+          fullName: "",
+          email: "",
+          phoneNumber: "",
+          gender: "",
+          dateOfBirth: "",
+          bloodGroup: "",
+          address: "",
+          state: "",
+          district: "",
+          city: "",
+          pincode: "",
+          role: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setSelectedStateId(null);
+        setDistricts([]);
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error(
+        "Error: " + (error.response?.data?.message || "Something went wrong")
+      );
+    }
+  };
 
   return (
     <Container className="my-4">
@@ -185,7 +276,7 @@ if (formData.role !== "BloodBank") {
                       name="gender"
                       value={formData.gender}
                       onChange={handleChange}
-                      
+                      required
                     >
                       <option value="">-- Select Gender --</option>
                       <option value="Male">Male</option>
@@ -201,7 +292,7 @@ if (formData.role !== "BloodBank") {
                       name="dateOfBirth"
                       value={formData.dateOfBirth}
                       onChange={handleChange}
-                      
+                      required
                     />
                   </Form.Group>
 
@@ -211,7 +302,7 @@ if (formData.role !== "BloodBank") {
                       name="bloodGroup"
                       value={formData.bloodGroup}
                       onChange={handleChange}
-                      
+                      required
                     >
                       <option value="">-- Select Blood Group --</option>
                       <option value="A+">A+</option>
@@ -268,7 +359,10 @@ if (formData.role !== "BloodBank") {
                 >
                   <option value="">-- Select District --</option>
                   {districts.map((district) => (
-                    <option key={district.districtId} value={district.districtName}>
+                    <option
+                      key={district.districtId}
+                      value={district.districtName}
+                    >
                       {district.districtName}
                     </option>
                   ))}
@@ -328,6 +422,11 @@ if (formData.role !== "BloodBank") {
           </div>
         </Form>
       </Card>
+       <div className="text-center mt-5">
+              <Button variant="secondary" onClick={() => navigate("/admin-dashboard")}>
+                Back to Dashboard
+              </Button>
+            </div>
     </Container>
   );
 };

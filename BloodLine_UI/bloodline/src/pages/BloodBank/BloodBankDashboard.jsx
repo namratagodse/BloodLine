@@ -40,58 +40,63 @@ const BloodBankDashboard = () => {
   return (
     <Container className="mt-4">
       <Row className="g-4">
-        <Col md={6} lg={3}>
+        <Col md={4}>
           <Card
-            className="text-center p-3 shadow-sm"
+            className="text-center p-3 shadow-sm text-white"
+            style={{ backgroundColor: "#007bff", cursor: "pointer" }}
             onClick={() => handleCardClick("/bloodbank-requests/all")}
-            style={{ cursor: "pointer" }}
           >
             <h4>Total Requests</h4>
-            <h2>{dashboardData.totalRequests}</h2>
           </Card>
         </Col>
 
-        <Col md={6} lg={3}>
+        <Col md={4}>
           <Card
-            className="text-center p-3 shadow-sm"
+            className="text-center p-3 shadow-sm text-white"
+            style={{ backgroundColor: "#28a745", cursor: "pointer" }}
             onClick={() => handleCardClick("/bloodbank-inventory")}
-            style={{ cursor: "pointer" }}
           >
             <h4>Total Inventory</h4>
-            <h2>{dashboardData.totalInventory}</h2>
           </Card>
         </Col>
 
-        <Col md={6} lg={3}>
+        <Col md={4}>
           <Card
-            className="text-center p-3 shadow-sm"
+            className="text-center p-3 shadow-sm text-white"
+            style={{ backgroundColor: "#ffc107", cursor: "pointer" }}
             onClick={() => handleCardClick("/bloodbank-requests/Pending")}
-            style={{ cursor: "pointer" }}
           >
             <h4>Pending Requests</h4>
-            <h2>{dashboardData.pendingRequests}</h2>
           </Card>
         </Col>
 
-        <Col md={6} lg={3}>
+        <Col md={4}>
           <Card
-            className="text-center p-3 shadow-sm"
+            className="text-center p-3 shadow-sm text-white"
+            style={{ backgroundColor: "#17a2b8", cursor: "pointer" }}
             onClick={() => handleCardClick("/bloodbank-requests/Approved")}
-            style={{ cursor: "pointer" }}
           >
             <h4>Approved Requests</h4>
-            <h2>{dashboardData.approvedRequests}</h2>
           </Card>
         </Col>
 
-         <Col md={6} lg={3}>
+        <Col md={4}>
           <Card
-            className="text-center p-3 shadow-sm"
+            className="text-center p-3 shadow-sm text-white"
+            style={{ backgroundColor: "#dc3545", cursor: "pointer" }}
             onClick={() => handleCardClick("/bloodbank-requests/Rejected")}
-            style={{ cursor: "pointer" }}
           >
             <h4>Rejected Requests</h4>
-            <h2>{dashboardData.rejectedRequests}</h2>
+          </Card>
+        </Col>
+
+        <Col md={4}>
+          <Card
+            className="text-center p-3 shadow-sm text-white"
+            style={{ backgroundColor: "#6f42c1", cursor: "pointer" }}
+            onClick={() => handleCardClick("/bloodbank-alldonations")}
+          >
+            <h4>All Donations</h4>
           </Card>
         </Col>
       </Row>

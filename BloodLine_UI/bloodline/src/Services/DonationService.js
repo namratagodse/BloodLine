@@ -30,3 +30,11 @@ export const getDonationsByDonorId = async (donorId) => {
     throw error;
   }
 };
+
+export const getDonationsByBloodBank = async (bloodBankId) => {
+    return axios.get(`https://localhost:7282/api/BloodDonation/GetDonationsByBloodBank/${bloodBankId}`);
+};
+
+export const addToInventory = async (donationId) => {
+    return axios.post(`https://localhost:7282/api/BloodInventory/AddDonationToInventory/${donationId}`);
+};

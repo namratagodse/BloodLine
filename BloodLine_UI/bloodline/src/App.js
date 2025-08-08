@@ -37,6 +37,9 @@ import MyDonations from './pages/Donor/MyDonations';
 import RaiseBloodRequest from './pages/Receiver/RaiseBloodRequest';
 import AllBloodRequests from './pages/Admin/AllBloodRequests';
 import MyRequests from './pages/Receiver/MyRequests';
+import AllDonations from './pages/BloodBank/AllDonations';
+import BloodInventory from './pages/BloodBank/BloodInventory';
+import AdminInventory from './pages/Admin/AdminInventory';
 
 function App() {
   const location = useLocation();
@@ -139,10 +142,37 @@ function App() {
         />
 
         <Route
+          path="/admin-allbloodinventory"
+          element={
+            <PrivateRoute allowedRoles={['Admin']}>
+              <AdminInventory/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/bloodbank-dashboard"
           element={
             <PrivateRoute allowedRoles={['BloodBank']}>
               <BloodBankDashboard/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/bloodbank-alldonations"
+          element={
+            <PrivateRoute allowedRoles={['BloodBank']}>
+              <AllDonations/>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/bloodbank-inventory"
+          element={
+            <PrivateRoute allowedRoles={['BloodBank']}>
+              <BloodInventory/>
             </PrivateRoute>
           }
         />

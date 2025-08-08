@@ -1,8 +1,10 @@
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { registerUser } from '../Services/RegisterService';
+import { getAllStates, getDistrictsByState } from '../Services/LocationService'; // using same service as AddUser
+
 function Register() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -25,32 +27,61 @@ function Register() {
   const [submitted, setSubmitted] = useState(false);
   const [apiError, setApiError] = useState('');
 
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [selectedStateId, setSelectedStateId] = useState(null);
+
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-  const stateDistrictCity = {
-    Maharashtra: {
-      Pune: ['Pune City', 'Hinjewadi', 'Wakad'],
-      Mumbai: ['Andheri', 'Borivali', 'Thane']
-    },
-    Karnataka: {
-      Bengaluru: ['Whitefield', 'Indiranagar'],
-      Mysuru: ['VV Mohalla', 'JP Nagar']
+  useEffect(() => {
+    getAllStates()
+      .then((res) => setStates(res))
+      .catch((err) => console.error('Error fetching states', err));
+  }, []);
+
+  useEffect(() => {
+    if (selectedStateId) {
+      getDistrictsByState(selectedStateId)
+        .then((res) => setDistricts(res))
+        .catch((err) => console.error('Error fetching districts', err));
+    } else {
+      setDistricts([]);
     }
-  };
+  }, [selectedStateId]);
 
   const validateForm = () => {
     const newErrors = {};
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8}$/; // updated length to exactly 8
+    const phoneRegex = /^[0-9]{10}$/; // only 10 digits
+    const pincodeRegex = /^[0-9]{6}$/; // only 6 digits
+    const emailRegex = /^[a-z0-9]+@[a-z0-9]+\.(com)$/; // lowercase, digits, must end with .com
 
     if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Email must be lowercase, digits, and end with .com';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'Phone number must be exactly 10 digits';
+    }
+
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
     if (!formData.bloodGroup) newErrors.bloodGroup = 'Blood Group is required';
     if (!formData.role) newErrors.role = 'Role is required';
+
+    if (!formData.pincode.trim()) {
+      newErrors.pincode = 'Pincode is required';
+    } else if (!pincodeRegex.test(formData.pincode)) {
+      newErrors.pincode = 'Pincode must be exactly 6 digits';
+    }
+
     if (!formData.password || !passwordRegex.test(formData.password)) {
-      newErrors.password = 'Password must contain a capital letter, number, and special character';
+      newErrors.password = 'Password must contain 1 capital letter, 1 number, 1 special char, and be exactly 8 characters';
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
@@ -61,20 +92,27 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
 
     if (name === 'state') {
-      setFormData((prev) => ({ ...prev, district: '', city: '' }));
-    } else if (name === 'district') {
-      setFormData((prev) => ({ ...prev, city: '' }));
+      const selected = states.find((s) => s.stateName === value);
+      setSelectedStateId(selected?.stateId || null);
+      setFormData((prev) => ({ ...prev, state: value, district: '', city: '' }));
+      return;
     }
+
+    if (name === 'district') {
+      setFormData((prev) => ({ ...prev, district: value, city: '' }));
+      return;
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formValidationErrors = validateForm();
 
-     if (Object.keys(formValidationErrors).length === 0) {
+    if (Object.keys(formValidationErrors).length === 0) {
       try {
         await registerUser(formData);
         toast.success('Registration Successful!');
@@ -95,6 +133,8 @@ function Register() {
           role: '',
         });
         setErrors({});
+        setSelectedStateId(null);
+        setDistricts([]);
       } catch (error) {
         toast.error(error.message || 'Registration failed');
       }
@@ -136,7 +176,17 @@ function Register() {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Email*</Form.Label>
-                      <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} isInvalid={!!errors.email} />
+                      <Form.Control
+                        type="text"
+                        name="email"
+                        value={formData.email}
+                        onChange={(e) => {
+                          // only lowercase letters, numbers, @ and .
+                          const val = e.target.value.replace(/[^a-z0-9@.]/g, '');
+                          setFormData({ ...formData, email: val });
+                        }}
+                        isInvalid={!!errors.email}
+                      />
                       <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
@@ -146,8 +196,20 @@ function Register() {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Phone Number*</Form.Label>
-                      <Form.Control type="text" name="phone" value={formData.phone} onChange={handleChange} isInvalid={!!errors.phone} />
-                      <Form.Control.Feedback type="invalid">{errors.phone}</Form.Control.Feedback>
+                      <Form.Control
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        maxLength={10}
+                        onChange={(e) => {
+                          const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                          setFormData({ ...formData, phone: onlyNums });
+                        }}
+                        isInvalid={!!errors.phone}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.phone}
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </Col>
 
@@ -199,8 +261,10 @@ function Register() {
                       <Form.Label>State</Form.Label>
                       <Form.Select name="state" value={formData.state} onChange={handleChange}>
                         <option value="">-- Select State --</option>
-                        {Object.keys(stateDistrictCity).map((state) => (
-                          <option key={state}>{state}</option>
+                        {states.map((state) => (
+                          <option key={state.stateId} value={state.stateName}>
+                            {state.stateName}
+                          </option>
                         ))}
                       </Form.Select>
                     </Form.Group>
@@ -211,10 +275,11 @@ function Register() {
                       <Form.Label>District</Form.Label>
                       <Form.Select name="district" value={formData.district} onChange={handleChange} disabled={!formData.state}>
                         <option value="">-- Select District --</option>
-                        {formData.state &&
-                          Object.keys(stateDistrictCity[formData.state]).map((district) => (
-                            <option key={district}>{district}</option>
-                          ))}
+                        {districts.map((district) => (
+                          <option key={district.districtId} value={district.districtName}>
+                            {district.districtName}
+                          </option>
+                        ))}
                       </Form.Select>
                     </Form.Group>
                   </Col>
@@ -222,13 +287,12 @@ function Register() {
                   <Col md={4}>
                     <Form.Group className="mb-3">
                       <Form.Label>City</Form.Label>
-                      <Form.Select name="city" value={formData.city} onChange={handleChange} disabled={!formData.district}>
-                        <option value="">-- Select City --</option>
-                        {formData.state && formData.district &&
-                          stateDistrictCity[formData.state][formData.district].map((city) => (
-                            <option key={city}>{city}</option>
-                          ))}
-                      </Form.Select>
+                      <Form.Control
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                      />
                     </Form.Group>
                   </Col>
                 </Row>
@@ -237,7 +301,18 @@ function Register() {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Pincode</Form.Label>
-                      <Form.Control type="text" name="pincode" value={formData.pincode} onChange={handleChange} />
+                      <Form.Control
+                        type="text"
+                        name="pincode"
+                        value={formData.pincode}
+                        maxLength={6}
+                        onChange={(e) => {
+                          const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                          setFormData({ ...formData, pincode: onlyNums });
+                        }}
+                        isInvalid={!!errors.pincode}
+                      />
+                      <Form.Control.Feedback type="invalid">{errors.pincode}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
 
@@ -248,7 +323,12 @@ function Register() {
                         type="password"
                         name="password"
                         value={formData.password}
-                        onChange={handleChange}
+                        maxLength={8}
+                        onChange={(e) => {
+                          // Limit to 8 chars
+                          const val = e.target.value.slice(0, 8);
+                          setFormData({ ...formData, password: val });
+                        }}
                         isInvalid={!!errors.password}
                       />
                       <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
@@ -262,7 +342,11 @@ function Register() {
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
-                    onChange={handleChange}
+                    maxLength={8}
+                    onChange={(e) => {
+                      const val = e.target.value.slice(0, 8);
+                      setFormData({ ...formData, confirmPassword: val });
+                    }}
                     isInvalid={!!errors.confirmPassword}
                   />
                   <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>

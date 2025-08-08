@@ -42,5 +42,12 @@ namespace BloodLineAPI.Controllers
 
             return Ok(donations);
         }
+
+        [HttpGet("GetDonationsByBloodBank/{bloodBankId}")]
+        public IActionResult GetDonationsByBloodBank(int bloodBankId)
+        {
+            var donations = _donationBAL.GetDonationsByBloodBankId(bloodBankId);
+            return Ok(donations);
+        }
     }
 }

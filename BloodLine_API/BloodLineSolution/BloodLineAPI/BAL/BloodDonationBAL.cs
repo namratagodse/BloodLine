@@ -93,5 +93,39 @@ namespace BloodLineAPI.BAL
 
             return donations;
         }
+
+        public List<BloodDonationModel> GetDonationsByBloodBankId(int bloodBankId)
+        {
+            List<BloodDonationModel> donations = new List<BloodDonationModel>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlCommand cmd = new SqlCommand("sp_GetDonationByBloodBankId", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BloodBankID", bloodBankId);
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        donations.Add(new BloodDonationModel
+                        {
+                            DonationID = Convert.ToInt32(reader["DonationID"]),
+                            DonorID = Convert.ToInt32(reader["DonorID"]),
+                            DonorName = reader["DonorName"].ToString(),
+                            BloodBankID = Convert.ToInt32(reader["BloodBankID"]),
+                            BloodBankName = reader["BloodBankName"].ToString(),
+                            BloodGroup = reader["BloodGroup"].ToString(),
+                            UnitsDonated = Convert.ToInt32(reader["UnitsDonated"]),
+                            DonationDate = Convert.ToDateTime(reader["DonationDate"]),
+                            IsAddedToInventory = reader["IsAddedToInventory"] != DBNull.Value ? Convert.ToBoolean(reader["IsAddedToInventory"]) : (bool?)null
+                        });
+                    }
+                }
+            }
+
+            return donations;
+        }
     }
 }
