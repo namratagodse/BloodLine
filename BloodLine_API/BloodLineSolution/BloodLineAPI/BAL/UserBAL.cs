@@ -1,4 +1,5 @@
 ﻿using BloodLineAPI.Model;
+using BloodLineAPI.Utilities;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -22,11 +23,14 @@ namespace BloodLineAPI.BAL
                 SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                // Hash the password before sending to DB
+                string hashedPassword = PasswordHelper.HashPassword(user.PasswordHash);
+
                 cmd.Parameters.AddWithValue("@Action", user.Action);
                 cmd.Parameters.AddWithValue("@UserID", DBNull.Value);
                 cmd.Parameters.AddWithValue("@FullName", user.FullName ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Email", user.Email ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@PasswordHash", hashedPassword ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Gender", user.Gender ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@DateOfBirth", user.DateOfBirth ?? (object)DBNull.Value);
@@ -45,16 +49,16 @@ namespace BloodLineAPI.BAL
             }
         }
 
-        // ✅ New LoginUser method added
-        public UserModel LoginUser(string email, string passwordHash)
+        // New LoginUser method added
+        public UserModel LoginUser(string email, string enteredPassword)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                SqlCommand cmd = new SqlCommand("sp_LoginUser", conn);
+                SqlCommand cmd = new SqlCommand("sp_ManageUserMaster", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                cmd.Parameters.AddWithValue("@Action", "GET_BY_EMAIL");
                 cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@PasswordHash", passwordHash);
 
                 conn.Open();
 
@@ -62,14 +66,20 @@ namespace BloodLineAPI.BAL
                 {
                     if (reader.Read())
                     {
-                        return new UserModel
+                        string storedHash = reader["PasswordHash"].ToString();
+
+                        // Verify the entered password against the stored hash
+                        if (PasswordHelper.VerifyPassword(enteredPassword, storedHash))
                         {
-                            UserID = Convert.ToInt32(reader["UserID"]),
-                            FullName = reader["FullName"].ToString(),
-                            Email = reader["Email"].ToString(),
-                            Role = reader["Role"].ToString(),
-                            IsActive = true
-                        };
+                            return new UserModel
+                            {
+                                UserID = Convert.ToInt32(reader["UserID"]),
+                                FullName = reader["FullName"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Role = reader["Role"].ToString(),
+                                IsActive = Convert.ToBoolean(reader["IsActive"])
+                            };
+                        }
                     }
                 }
             }

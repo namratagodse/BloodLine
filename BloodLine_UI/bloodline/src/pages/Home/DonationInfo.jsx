@@ -10,6 +10,8 @@ const bloodCompatibility = {
   'O-': { take: ['O-'], give: ['Everyone'] },
   'B-': { take: ['O-', 'B-'], give: ['B+', 'B-', 'AB+', 'AB-'] },
   'AB-': { take: ['O-', 'A-', 'B-', 'AB-'], give: ['AB+', 'AB-'] },
+  'Bombay Blood': { take: ['Bombay Blood'], give: ['Bombay Blood'] },
+
 };
 
 function DonationInfo() {

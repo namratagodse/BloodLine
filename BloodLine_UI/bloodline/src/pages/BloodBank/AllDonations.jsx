@@ -56,17 +56,19 @@ const AllDonations = () => {
             <th>Blood Group</th>
             <th>Units</th>
             <th>Donation Date</th>
+            <th>NextDonation Date</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {donations.map(({ donationID, donorName, bloodGroup, unitsDonated, donationDate, isAddedToInventory }) => (
+          {donations.map(({ donationID, donorName, bloodGroup, unitsDonated, donationDate, nextDonationDate,isAddedToInventory }) => (
             <tr key={donationID}>
               <td>{donorName}</td>
               <td>{bloodGroup}</td>
               <td>{unitsDonated}</td>
               <td>{new Date(donationDate).toLocaleDateString()}</td>
+              <td>{new Date(nextDonationDate).toLocaleDateString()}</td>
               <td>
                 <button
                   className={`btn btn-${isAddedToInventory ? 'success' : 'secondary'}`}

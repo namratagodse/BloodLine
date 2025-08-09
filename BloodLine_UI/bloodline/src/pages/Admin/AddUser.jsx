@@ -313,6 +313,7 @@ const AddUser = () => {
                       <option value="O-">O-</option>
                       <option value="AB+">AB+</option>
                       <option value="AB-">AB-</option>
+                      <option value="Bombay Blood-">Bombay Blood</option>
                     </Form.Select>
                   </Form.Group>
                 </>

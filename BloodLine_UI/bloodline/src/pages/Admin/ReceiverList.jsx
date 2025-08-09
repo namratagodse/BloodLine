@@ -95,6 +95,7 @@ function ReceiverList() {
             <th><strong>Full Name</strong></th>
             <th><strong>Email</strong></th>
             <th><strong>Phone</strong></th>
+            <th><strong>Aadhaar No.</strong></th>
             <th><strong>Gender</strong></th>
             <th><strong>Date of Birth</strong></th>
             <th><strong>Blood Group</strong></th>
@@ -113,6 +114,7 @@ function ReceiverList() {
               <td>{receiver.fullName}</td>
               <td>{receiver.email}</td>
               <td>{receiver.phoneNumber}</td>
+              <td>{receiver.aadhaarNumber}</td>
               <td>{receiver.gender}</td>
               <td>
                   {receiver.dateOfBirth

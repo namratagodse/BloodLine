@@ -28,7 +28,7 @@ import BloodBankDashboard from './pages/BloodBank/BloodBankDashboard';
 import BloodBankNavbar from './pages/BloodBank/BloodBankNavbar';
 import RejectedRequest from './pages/BloodBank/RejectedRequest';
 import ApprovedRequest from './pages/BloodBank/ApprovedRequest';
-import PendingRequests from './pages/BloodBank/PendingRequest';
+import OngoingRequests from './pages/BloodBank/OngoingRequest';
 import TotalRequests from './pages/BloodBank/TotalRequest';
 import ReceiverDashboard from './pages/Receiver/ReceiverDashboard';
 import DonorDashboard from './pages/Donor/DonorDashboard';
@@ -40,6 +40,7 @@ import MyRequests from './pages/Receiver/MyRequests';
 import AllDonations from './pages/BloodBank/AllDonations';
 import BloodInventory from './pages/BloodBank/BloodInventory';
 import AdminInventory from './pages/Admin/AdminInventory';
+import AdminDonations from './pages/Admin/AdminDonations';
 
 function App() {
   const location = useLocation();
@@ -196,10 +197,10 @@ function App() {
       />
 
       <Route
-        path="/bloodbank-requests/Pending"
+        path="/bloodbank-requests/Ongoing"
         element={
           <PrivateRoute allowedRoles={['BloodBank']}>
-            <PendingRequests />
+            <OngoingRequests />
           </PrivateRoute>
         }
       />
@@ -240,6 +241,14 @@ function App() {
         }
       />
 
+      <Route
+        path="/admin-allDonations"
+        element={
+          <PrivateRoute allowedRoles={['Admin']}>
+            < AdminDonations />
+          </PrivateRoute>
+        }
+      />
         <Route
         path="/receiver-myrequests"
         element={

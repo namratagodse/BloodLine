@@ -46,7 +46,7 @@ const MyDonations = () => {
       <Container className="mt-5">
         <h2 className="text-center mb-2">My Donations</h2>
         <p className="text-center text-danger fw-bold mb-4">
-          Look at your last donation and donate after 3 months
+          Look at your last donation and donate onwards next donation date
         </p>
 
         {loading ? (
@@ -69,6 +69,7 @@ const MyDonations = () => {
             <th>Units Donated</th>
             <th>Blood Group</th>
             <th>Donation Date</th>
+            <th>NextDonation Date</th>
             <th>Blood Bank</th>
             </tr>
         </thead>
@@ -79,6 +80,7 @@ const MyDonations = () => {
                 <td>{donation.unitsDonated}</td>
                 <td>{donation.bloodGroup}</td>
                 <td>{new Date(donation.donationDate).toLocaleDateString()}</td>
+                <td>{new Date(donation.nextDonationDate).toLocaleDateString()}</td>
                 <td>{donation.bloodBankName || "N/A"}</td>
             </tr>
             ))}

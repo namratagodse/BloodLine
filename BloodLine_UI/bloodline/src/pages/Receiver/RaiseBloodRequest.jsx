@@ -48,6 +48,7 @@ const RaiseBloodRequest = () => {
     "AB-",
     "O+",
     "O-",
+    "Bombay Blood",
   ];
 
   useEffect(() => {

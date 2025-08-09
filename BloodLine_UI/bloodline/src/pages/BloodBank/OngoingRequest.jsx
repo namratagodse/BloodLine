@@ -13,14 +13,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; // make sure you import this
 
-const PendingRequest = () => {
-  const [pendingRequests, setPendingRequests] = useState([]);
+const OngoingRequest = () => {
+  const [OngoingRequests, setOngoingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
 
-const fetchPendingRequests = async () => {
+const fetchOngoingRequests = async () => {
   try {
     const token = localStorage.getItem("token");
 
@@ -33,7 +33,7 @@ const fetchPendingRequests = async () => {
     const bloodBankId = decoded.UserID; // 🔑 assuming userid is your BloodBankId
 
     const response = await axios.get(
-      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Pending/${bloodBankId}`,
+      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Ongoing/${bloodBankId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,9 +41,9 @@ const fetchPendingRequests = async () => {
       }
     );
 
-    setPendingRequests(response.data);
+    setOngoingRequests(response.data);
   } catch (error) {
-    console.error("Error fetching pending requests:", error);
+    console.error("Error fetching Ongoing requests:", error);
   } finally {
     setLoading(false);
   }
@@ -68,7 +68,7 @@ const fetchPendingRequests = async () => {
     setShowToast(true);
 
     // Remove the updated request from the list
-    setPendingRequests(prev =>
+    setOngoingRequests(prev =>
       prev.filter(request => request.requestId !== requestId)
     );
   } catch (error) {
@@ -80,22 +80,22 @@ const fetchPendingRequests = async () => {
 
 
   useEffect(() => {
-    fetchPendingRequests();
+    fetchOngoingRequests();
   }, []);
 
   return (
     <>
       <Card className="mt-4">
         <Card.Header>
-          <h4 className="mb-0">Pending Blood Requests</h4>
+          <h4 className="mb-0">Ongoing Blood Requests</h4>
         </Card.Header>
         <Card.Body>
           {loading ? (
             <div className="text-center">
               <Spinner animation="border" variant="primary" />
             </div>
-          ) : pendingRequests.length === 0 ? (
-            <p>No pending requests found.</p>
+          ) : OngoingRequests.length === 0 ? (
+            <p>No Ongoing requests found.</p>
           ) : (
             <Table striped bordered hover responsive>
               <thead>
@@ -110,7 +110,7 @@ const fetchPendingRequests = async () => {
                 </tr>
               </thead>
               <tbody>
-                {pendingRequests.map((request, index) => (
+                {OngoingRequests.map((request, index) => (
                   <tr key={request.requestId}>
                     <td>{index + 1}</td>
                     <td>{request.requesterName}</td>
@@ -174,4 +174,4 @@ const fetchPendingRequests = async () => {
   );
 };
 
-export default PendingRequest;
+export default OngoingRequest;

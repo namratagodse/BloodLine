@@ -134,6 +134,7 @@ const DonorList = () => {
         <th><strong>Full Name</strong></th>
         <th><strong>Email</strong></th>
         <th><strong>Phone</strong></th>
+        <th><strong>Aadhaar No.</strong></th>
         <th><strong>Gender</strong></th>
         <th><strong>Date of Birth</strong></th>
         <th><strong>Blood Group</strong></th>
@@ -152,6 +153,7 @@ const DonorList = () => {
                 <td>{donor.fullName}</td>
                 <td>{donor.email}</td>
                 <td>{donor.phoneNumber}</td>
+                <td>{donor.aadhaarNumber}</td>
                 <td>{donor.gender}</td>
                 <td>
                   {donor.dateOfBirth
@@ -217,6 +219,14 @@ const DonorList = () => {
               <Form.Control
                 name="phoneNumber"
                 value={editFormData.phoneNumber || ""}
+                onChange={handleEditChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Aadhaar No.</Form.Label>
+              <Form.Control
+                name="aadhaarNumber"
+                value={editFormData.aadhaarNumber || ""}
                 onChange={handleEditChange}
               />
             </Form.Group>

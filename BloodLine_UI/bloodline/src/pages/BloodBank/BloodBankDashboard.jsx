@@ -7,7 +7,7 @@ const BloodBankDashboard = () => {
   const [dashboardData, setDashboardData] = useState({
     totalRequests: 0,
     totalInventory: 0,
-    pendingRequests: 0,
+    ongoingRequests: 0,
     approvedRequests: 0,
     rejectedRequests: 0
   });
@@ -64,9 +64,9 @@ const BloodBankDashboard = () => {
           <Card
             className="text-center p-3 shadow-sm text-white"
             style={{ backgroundColor: "#ffc107", cursor: "pointer" }}
-            onClick={() => handleCardClick("/bloodbank-requests/Pending")}
+            onClick={() => handleCardClick("/bloodbank-requests/Ongoing")}
           >
-            <h4>Pending Requests</h4>
+            <h4>Ongoing Requests</h4>
           </Card>
         </Col>
 

@@ -85,6 +85,9 @@ namespace BloodLineAPI.BAL
                         DonationDate = reader.IsDBNull(reader.GetOrdinal("DonationDate"))
                                         ? null
                                         : reader.GetDateTime(reader.GetOrdinal("DonationDate")),
+                        NextDonationDate = reader.IsDBNull(reader.GetOrdinal("NextDonationDate"))
+                                        ? null
+                                        : reader.GetDateTime(reader.GetOrdinal("NextDonationDate")),
                         BloodBankName = reader["BloodBankName"].ToString() 
 
                     });
@@ -119,6 +122,7 @@ namespace BloodLineAPI.BAL
                             BloodGroup = reader["BloodGroup"].ToString(),
                             UnitsDonated = Convert.ToInt32(reader["UnitsDonated"]),
                             DonationDate = Convert.ToDateTime(reader["DonationDate"]),
+                            NextDonationDate = reader["NextDonationDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["NextDonationDate"]) : null,
                             IsAddedToInventory = reader["IsAddedToInventory"] != DBNull.Value ? Convert.ToBoolean(reader["IsAddedToInventory"]) : (bool?)null
                         });
                     }

@@ -9,6 +9,7 @@
         public string BloodGroup { get; set; }
         public int UnitsDonated { get; set; }
         public DateTime? DonationDate { get; set; }     // Defaulted to GETDATE() in DB
+        public DateTime? NextDonationDate { get; set; } // New: 90 days after DonationDate
         public string? BloodBankName { get; set; }
         public bool? IsAddedToInventory { get; set; }
     }

@@ -10,7 +10,7 @@ function Register() {
     fullName: '',
     email: '',
     phone: '',
-    aadhaar: '',           // Added Aadhaar here
+    aadhaarNumber: '',           
     gender: '',
     dob: '',
     bloodGroup: '',
@@ -32,7 +32,7 @@ function Register() {
   const [districts, setDistricts] = useState([]);
   const [selectedStateId, setSelectedStateId] = useState(null);
 
-  const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'Bombay Blood'];
 
   useEffect(() => {
     getAllStates()
@@ -54,7 +54,7 @@ function Register() {
     const newErrors = {};
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8}$/; // exactly 8 chars, one uppercase, number, special char
     const phoneRegex = /^[0-9]{10}$/; // only 10 digits
-    const aadhaarRegex = /^[0-9]{12}$/; // exactly 12 digits
+    const aadhaarNumberRegex = /^[0-9]{12}$/; // exactly 12 digits
     const pincodeRegex = /^[0-9]{6}$/; // only 6 digits
     const emailRegex = /^[a-z0-9]+@[a-z0-9]+\.(com)$/; // lowercase, digits, must end with .com
 
@@ -71,10 +71,10 @@ function Register() {
       newErrors.phone = 'Phone number must be exactly 10 digits';
     }
 
-    if (!formData.aadhaar.trim()) {
-      newErrors.aadhaar = 'Aadhaar Number is required';
-    } else if (!aadhaarRegex.test(formData.aadhaar)) {
-      newErrors.aadhaar = 'Aadhaar Number must be exactly 12 digits';
+    if (!formData.aadhaarNumber.trim()) {
+      newErrors.aadhaarNumber = 'aadhaarNumber Number is required';
+    } else if (!aadhaarNumberRegex.test(formData.aadhaarNumber)) {
+      newErrors.aadhaarNumber = 'aadhaarNumber Number must be exactly 12 digits';
     }
 
     if (!formData.gender) newErrors.gender = 'Gender is required';
@@ -120,10 +120,10 @@ function Register() {
       return;
     }
 
-    if (name === 'aadhaar') {
+    if (name === 'aadhaarNumber') {
       // Only digits, max length 12
       const onlyNums = value.replace(/[^0-9]/g, '').slice(0, 12);
-      setFormData((prev) => ({ ...prev, aadhaar: onlyNums }));
+      setFormData((prev) => ({ ...prev, aadhaarNumber: onlyNums }));
       return;
     }
 
@@ -155,13 +155,13 @@ function Register() {
 
     if (Object.keys(formValidationErrors).length === 0) {
       try {
+        console.log('Submitting formData:', formData);  // <-- Add this
         await registerUser(formData);
         toast.success('Registration Successful!');
         setFormData({
           fullName: '',
           email: '',
           phone: '',
-          aadhaar: '',
           gender: '',
           dob: '',
           bloodGroup: '',
@@ -173,6 +173,7 @@ function Register() {
           password: '',
           confirmPassword: '',
           role: '',
+          aadhaarNumber: '',
         });
         setErrors({});
         setSelectedStateId(null);
@@ -248,19 +249,19 @@ function Register() {
                     </Form.Group>
                   </Col>
 
-                  {/* Added Aadhaar Number field here */}
+                  {/* Added aadhaarNumber Number field here */}
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Aadhaar Number*</Form.Label>
                       <Form.Control
                         type="text"
-                        name="aadhaar"
-                        value={formData.aadhaar}
+                        name="aadhaarNumber"
+                        value={formData.aadhaarNumber}
                         maxLength={12}
                         onChange={handleChange}
-                        isInvalid={!!errors.aadhaar}
+                        isInvalid={!!errors.aadhaarNumber}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.aadhaar}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">{errors.aadhaarNumber}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>

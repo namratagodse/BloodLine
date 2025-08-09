@@ -18,6 +18,7 @@ export const registerUser = async (formData) => {
     pincode: formData.pincode,
     role: formData.role,
     isActive: true,
+    aadhaarNumber: formData.aadhaarNumber
   };
 
   try {

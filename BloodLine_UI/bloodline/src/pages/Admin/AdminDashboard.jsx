@@ -49,6 +49,7 @@ function AdminDashboard() {
     { title: 'Blood Banks', value: stats.bloodBankCount, route: '/admin-allbloodbanks', color: 'danger' },
     { title: 'Blood Inventory Units', value: stats.bloodInventoryCount, route: '/admin-allbloodinventory', color: 'dark' },
     { title: 'Blood Requests', value: stats.bloodRequests, route: '/admin-allBloodRequests', color: 'dark' },
+    { title: 'All Donations', value: stats.allDonations, route: '/admin-allDonations', color: 'warning' },
   ];
 
   const handleCardClick = (route) => {
