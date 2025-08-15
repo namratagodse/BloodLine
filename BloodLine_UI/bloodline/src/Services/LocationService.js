@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://localhost:7282/api/Location";
+const BASE_URL = "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/Location";
 
 export const getAllStates = async () => {
   const res = await axios.get(`${BASE_URL}/states`);
@@ -13,7 +13,7 @@ export const getDistrictsByState = async (stateId) => {
 };
 
 export const getBloodBanksByDistrict = async (districtName) => {
-  const res = await axios.get(`https://localhost:7282/api/User/GetBloodBanksByDistrict/${districtName}`);
+  const res = await axios.get(`https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/User/GetBloodBanksByDistrict/${districtName}`);
   return res.data;
 };
 

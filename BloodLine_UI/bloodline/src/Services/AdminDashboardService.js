@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://localhost:7282/api';
+const BASE_URL = 'https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api';
 
 export const getAdminDashboardCounts = async () => {
   const token = localStorage.getItem('token');

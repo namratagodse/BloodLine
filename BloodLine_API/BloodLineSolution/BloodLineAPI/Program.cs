@@ -77,7 +77,7 @@ namespace BloodLineAPI
                 options.AddPolicy("AllowFrontend",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:3000")
+                        policy.WithOrigins("http://localhost:3000", "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/")
                               .AllowAnyHeader()
                               .AllowAnyMethod();
                     });
@@ -89,16 +89,22 @@ namespace BloodLineAPI
             var app = builder.Build();
 
             // ✅ Enable Swagger in all environments
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            //app.UseSwagger();
+            //app.UseSwaggerUI();
 
             // ✅ Redirect root URL to Swagger
-            app.MapGet("/", context =>
-            {
-                context.Response.Redirect("/swagger");
-                return Task.CompletedTask;
-            });
+            //app.MapGet("/", context =>
+            //{
+            //    context.Response.Redirect("/");
+            //    return Task.CompletedTask;
+            //});
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = "swagger"; // ✅ This maps it to /swagger instead of /
+            });
             // ✅ Apply CORS policy
             app.UseCors("AllowFrontend");
 
@@ -109,7 +115,8 @@ namespace BloodLineAPI
             app.UseAuthorization();
 
             app.MapControllers();
-
+            app.UseStaticFiles();
+            app.MapFallbackToFile("index.html");
             app.Run();
         }
     }

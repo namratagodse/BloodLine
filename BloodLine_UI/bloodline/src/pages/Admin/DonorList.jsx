@@ -42,7 +42,7 @@ const DonorList = () => {
 
   const fetchDistrictsByStateId = async (stateId) => {
     const res = await axios.get(
-      `https://localhost:7282/api/location/districts/${stateId}`
+      `https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/location/districts/${stateId}`
     );
     setDistricts(res.data);
   };
@@ -219,14 +219,6 @@ const DonorList = () => {
               <Form.Control
                 name="phoneNumber"
                 value={editFormData.phoneNumber || ""}
-                onChange={handleEditChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Aadhaar No.</Form.Label>
-              <Form.Control
-                name="aadhaarNumber"
-                value={editFormData.aadhaarNumber || ""}
                 onChange={handleEditChange}
               />
             </Form.Group>

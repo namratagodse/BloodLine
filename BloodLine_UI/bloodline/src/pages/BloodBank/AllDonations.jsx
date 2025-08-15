@@ -53,6 +53,7 @@ const AllDonations = () => {
         <thead className="thead-dark">
           <tr>
             <th>Donor Name</th>
+            <th>Gender</th>
             <th>Blood Group</th>
             <th>Units</th>
             <th>Donation Date</th>
@@ -62,9 +63,10 @@ const AllDonations = () => {
           </tr>
         </thead>
         <tbody>
-          {donations.map(({ donationID, donorName, bloodGroup, unitsDonated, donationDate, nextDonationDate,isAddedToInventory }) => (
+          {donations.map(({ donationID, donorName, gender, bloodGroup, unitsDonated, donationDate, nextDonationDate,isAddedToInventory }) => (
             <tr key={donationID}>
               <td>{donorName}</td>
+              <td>{gender}</td>
               <td>{bloodGroup}</td>
               <td>{unitsDonated}</td>
               <td>{new Date(donationDate).toLocaleDateString()}</td>

@@ -1,5 +1,5 @@
 // src/Services/RegisterService.js
-const API_URL = process.env.REACT_APP_API_URL || 'https://localhost:7282';
+const API_URL = process.env.REACT_APP_API_URL || 'https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net';
 
 export const registerUser = async (formData) => {
   const payload = {

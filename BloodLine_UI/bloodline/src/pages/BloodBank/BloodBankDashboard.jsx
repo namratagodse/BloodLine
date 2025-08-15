@@ -25,7 +25,7 @@ const BloodBankDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:7282/api/dashboard/bloodbank/${bloodBankId}`
+        `https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/dashboard/bloodbank/${bloodBankId}`
       );
       setDashboardData(response.data);
     } catch (error) {

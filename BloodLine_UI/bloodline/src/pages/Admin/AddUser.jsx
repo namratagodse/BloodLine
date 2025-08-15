@@ -9,6 +9,7 @@ const AddUser = () => {
     fullName: "",
     email: "",
     phoneNumber: "",
+    aadhaarNumber: "",
     gender: "",
     dateOfBirth: "",
     bloodGroup: "",
@@ -29,7 +30,7 @@ const AddUser = () => {
 
   useEffect(() => {
     axios
-      .get("https://localhost:7282/api/location/states")
+      .get("https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/location/states")
       .then((res) => setStates(res.data))
       .catch((err) => console.error("Error fetching states", err));
   }, []);
@@ -37,7 +38,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedStateId) {
       axios
-        .get(`https://localhost:7282/api/location/districts/${selectedStateId}`)
+        .get(`https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/location/districts/${selectedStateId}`)
         .then((res) => setDistricts(res.data))
         .catch((err) => console.error("Error fetching districts", err));
     } else {
@@ -51,6 +52,14 @@ const AddUser = () => {
     // Restrict phone number to digits only (max 10)
     if (name === "phoneNumber") {
       if (/^\d{0,10}$/.test(value)) {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+      return;
+    }
+
+    // Restrict Aadhaar number to digits only (max 12)
+    if (name === "aadhaarNumber") {
+      if (/^\d{0,12}$/.test(value)) {
         setFormData((prev) => ({ ...prev, [name]: value }));
       }
       return;
@@ -86,8 +95,10 @@ const AddUser = () => {
     const errors = {};
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/; // min 8 chars
     const phoneRegex = /^[0-9]{10}$/;
+    const aadhaarRegex = /^[0-9]{12}$/;
     const cityRegex = /^[A-Za-z\s]+$/;
     const emailRegex = /^[A-Za-z0-9]+@[A-Za-z0-9]+\.com$/;
+
     if (!formData.role) errors.role = "Role is required";
     if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
 
@@ -99,12 +110,13 @@ const AddUser = () => {
 
     if (!formData.phoneNumber.trim()) {
       errors.phoneNumber = "Phone number is required";
-    } else if (!phoneRegex.test(formData.phoneNumber)) {
+     } else if (!phoneRegex.test(formData.phoneNumber)) {
       errors.phoneNumber = "Phone number must be exactly 10 digits";
     }
 
     if (formData.role !== "BloodBank") {
       if (!formData.gender) errors.gender = "Gender is required";
+      if (!formData.aadhaarNumber) errors.aadhaarNumber = "Aadhaar number is required";
       if (!formData.dateOfBirth) {
         errors.dateOfBirth = "Date of Birth is required";
       } else {
@@ -159,6 +171,7 @@ const AddUser = () => {
       FullName: formData.fullName,
       Email: formData.email,
       PhoneNumber: formData.phoneNumber,
+      AadhaarNumber: formData.aadhaarNumber,
       Address: formData.address,
       State: formData.state,
       District: formData.district,
@@ -173,31 +186,33 @@ const AddUser = () => {
       payload.Gender = formData.gender;
       payload.DateOfBirth = formData.dateOfBirth;
       payload.BloodGroup = formData.bloodGroup;
+      payload.AadhaarNumber = formData.aadhaarNumber;
     }
 
     try {
       const response = await axios.post(
-        "https://localhost:7282/api/user/register",
+        "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/User/Register",
         payload
       );
 
       if (response.status === 200) {
         toast.success("User registered successfully!");
         setFormData({
-          fullName: "",
-          email: "",
-          phoneNumber: "",
-          gender: "",
-          dateOfBirth: "",
-          bloodGroup: "",
-          address: "",
-          state: "",
-          district: "",
-          city: "",
-          pincode: "",
-          role: "",
-          password: "",
-          confirmPassword: "",
+          fullName: '',
+          email: '',
+          phone: '',
+          gender: '',
+          dob: '',
+          bloodGroup: '',
+          address: '',
+          state: '',
+          district: '',
+          city: '',
+          pincode: '',
+          password: '',
+          confirmPassword: '',
+          role: '',
+          aadhaarNumber: '',
         });
         setSelectedStateId(null);
         setDistricts([]);
@@ -268,8 +283,19 @@ const AddUser = () => {
                 />
               </Form.Group>
 
-              {formData.role !== "BloodBank" && (
+            {formData.role !== "BloodBank" && (
                 <>
+              <Form.Group className="mb-3">
+                <Form.Label>Aadhaar Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="aadhaarNumber"
+                  value={formData.aadhaarNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+
                   <Form.Group className="mb-3">
                     <Form.Label>Gender</Form.Label>
                     <Form.Select
@@ -423,11 +449,11 @@ const AddUser = () => {
           </div>
         </Form>
       </Card>
-       <div className="text-center mt-5">
-              <Button variant="secondary" onClick={() => navigate("/admin-dashboard")}>
-                Back to Dashboard
-              </Button>
-            </div>
+      <div className="text-center mt-5">
+        <Button variant="secondary" onClick={() => navigate("/admin-dashboard")}>
+          Back to Dashboard
+        </Button>
+      </div>
     </Container>
   );
 };

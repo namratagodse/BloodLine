@@ -120,6 +120,7 @@ namespace BloodLineAPI.BAL
                             BloodBankID = Convert.ToInt32(reader["BloodBankID"]),
                             BloodBankName = reader["BloodBankName"].ToString(),
                             BloodGroup = reader["BloodGroup"].ToString(),
+                            Gender = reader["Gender"] != DBNull.Value ? reader["Gender"].ToString() : null,
                             UnitsDonated = Convert.ToInt32(reader["UnitsDonated"]),
                             DonationDate = Convert.ToDateTime(reader["DonationDate"]),
                             NextDonationDate = reader["NextDonationDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["NextDonationDate"]) : null,

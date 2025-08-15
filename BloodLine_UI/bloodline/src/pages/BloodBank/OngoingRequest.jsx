@@ -33,7 +33,7 @@ const fetchOngoingRequests = async () => {
     const bloodBankId = decoded.UserID; // 🔑 assuming userid is your BloodBankId
 
     const response = await axios.get(
-      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Ongoing/${bloodBankId}`,
+      `https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest/getbystatuswithuser/Ongoing/${bloodBankId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ const fetchOngoingRequests = async () => {
   try {
     const token = localStorage.getItem("token");
     await axios.post(
-      "https://localhost:7282/api/BloodRequest/updatestatus",
+      "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest/updatestatus",
       {
         requestId: requestId,
         status: newStatus,

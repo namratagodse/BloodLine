@@ -22,7 +22,7 @@ const fetchApprovedRequests = async () => {
     const bloodBankId = decoded.UserID; // 🔑 assuming userid is your BloodBankId
 
     const response = await axios.get(
-      `https://localhost:7282/api/BloodRequest/getbystatuswithuser/Approved/${bloodBankId}`,
+      `https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest/getbystatuswithuser/Approved/${bloodBankId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

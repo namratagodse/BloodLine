@@ -6,7 +6,8 @@
         public int RequesterId { get; set; }
         public string? RequesterName { get; set; }
         public int? BloodBankId { get; set; } 
-        public string? BloodBankName { get; set; } 
+        public string? BloodBankName { get; set; }
+        public string? Gender { get; set; }
         public string BloodGroup { get; set; }
         public int UnitsRequired { get; set; }
         public DateTime RequiredDate { get; set; }

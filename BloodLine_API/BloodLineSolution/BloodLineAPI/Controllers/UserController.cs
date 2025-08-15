@@ -1,10 +1,13 @@
-﻿using BloodLineAPI.BAL;
+﻿using Azure.Core;
+using BloodLineAPI.BAL;
 using BloodLineAPI.Model;
 using BloodLineAPI.Services;
+using BloodLineAPI.Utilities;
 using Microsoft.AspNetCore.Authorization; 
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace BloodLine_Backend.Controllers
 {
@@ -171,6 +174,27 @@ namespace BloodLine_Backend.Controllers
             {
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
+        }
+
+        [HttpPost("test")]
+        public IActionResult Test([FromBody] PasswordDTO request)
+        {
+            //var counts = _userBAL.GetAdminDashboardCounts();
+            //return Ok(counts);
+            const int SaltSize = 16;      // 128-bit
+            const int HashSize = 32;      // 256-bit
+            const int Iterations = 100000;
+            if (request.Password == null) throw new ArgumentNullException(nameof(request.Password));
+
+            byte[] salt = RandomNumberGenerator.GetBytes(SaltSize);
+            using var pbkdf2 = new Rfc2898DeriveBytes(request.Password, salt, Iterations, HashAlgorithmName.SHA256);
+            byte[] hash = pbkdf2.GetBytes(HashSize);
+
+            byte[] hashBytes = new byte[SaltSize + HashSize];
+            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
+            Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
+
+            return Ok(Convert.ToBase64String(hashBytes));
         }
     }
     }

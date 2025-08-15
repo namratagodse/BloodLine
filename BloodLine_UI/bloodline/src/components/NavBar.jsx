@@ -30,10 +30,6 @@ function CustomNavbar() {
               Home
             </Nav.Link>
 
-            <Nav.Link as={Link} to="/availability" className="px-3">
-              Blood Availability
-            </Nav.Link>
-
             <Nav.Link as={Link} to="/about-blood-donation" className="px-3">
               About Blood Donation
             </Nav.Link>

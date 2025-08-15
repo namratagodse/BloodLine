@@ -23,7 +23,6 @@ function Footer() {
             <h6 className="fw-semibold">Quick Links</h6>
             <ul className="list-unstyled">
               <li><a href="/about-donation" className="text-white text-decoration-none d-block py-1">About Blood Donation</a></li>
-              <li><a href="/availability" className="text-white text-decoration-none d-block py-1">Blood Availability</a></li>
               <li><a href="/login" className="text-white text-decoration-none d-block py-1">Login</a></li>
               <li><a href="/register" className="text-white text-decoration-none d-block py-1">Registration</a></li>
 

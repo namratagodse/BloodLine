@@ -24,7 +24,7 @@ const BloodInventory = () => {
         const bloodBankId = decoded?.UserID;
 
         const response = await axios.get(
-          `https://localhost:7282/api/BloodInventory/GetInventoryByBloodBankId/${bloodBankId}`
+          `https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodInventory/GetInventoryByBloodBankId/${bloodBankId}`
         );
         setInventory(response.data);
       } catch (err) {

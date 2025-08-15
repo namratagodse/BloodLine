@@ -25,7 +25,7 @@ const AdminDonations = () => {
     if (selectedBank) {
       axios
         .get(
-          `https://localhost:7282/api/BloodDonation/GetDonationsByBloodBank/${selectedBank}`
+          `https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodDonation/GetDonationsByBloodBank/${selectedBank}`
         )
         .then((res) => {
           console.log("Inventory for bank:", res.data);

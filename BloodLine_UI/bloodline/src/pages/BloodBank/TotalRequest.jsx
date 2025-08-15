@@ -12,7 +12,7 @@ const TotalRequests = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://localhost:7282/api/BloodRequest/getallwithuser",
+        "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest/getallwithuser",
         {
           headers: {
             Authorization: `Bearer ${token}`,

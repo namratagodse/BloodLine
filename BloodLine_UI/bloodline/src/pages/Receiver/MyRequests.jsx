@@ -23,7 +23,7 @@ const MyRequests = () => {
         const decoded = jwtDecode(token);
         const requesterId = decoded.UserID;
 
-        const response = await axios.get(`https://localhost:7282/api/BloodRequest/GetRequestsByRequesterId/${requesterId}`);
+        const response = await axios.get(`https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest/GetRequestsByRequesterId/${requesterId}`);
         setRequests(response.data);
       } catch (err) {
         setError("Failed to load requests");

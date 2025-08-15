@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://localhost:7282/api/BloodRequest";
+const API_BASE_URL = "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest";
 
 export const getRequestsByStatus = async (status, bloodBankId) => {
   try {
@@ -63,7 +63,7 @@ export const getAllRequestsWithUser = async () => {
 
 export const getAvailableBloodBanks = async (districtName, bloodGroup, unitsRequired) => {
   try {
-    const response = await axios.get("https://localhost:7282/api/BloodRequest/GetAvailableBloodBanks", {
+    const response = await axios.get("https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest/GetAvailableBloodBanks", {
       params: {
         district: districtName,
         bloodGroup: bloodGroup,
@@ -86,5 +86,5 @@ export const getAvailableBloodBanks = async (districtName, bloodGroup, unitsRequ
 
 
 export const submitBloodRequest = (data) => {
-  return axios.post("https://localhost:7282/api/BloodRequest", data);
+  return axios.post("https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodRequest", data);
 };

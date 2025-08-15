@@ -1,7 +1,7 @@
 // src/Services/DonationService.js
 import axios from "axios";
 
-const BASE_URL = "https://localhost:7282/api/BloodDonation";
+const BASE_URL = "https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodDonation";
 
 export const insertDonation = async (donationData) => {
   try {
@@ -32,9 +32,9 @@ export const getDonationsByDonorId = async (donorId) => {
 };
 
 export const getDonationsByBloodBank = async (bloodBankId) => {
-    return axios.get(`https://localhost:7282/api/BloodDonation/GetDonationsByBloodBank/${bloodBankId}`);
+    return axios.get(`https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodDonation/GetDonationsByBloodBank/${bloodBankId}`);
 };
 
 export const addToInventory = async (donationId) => {
-    return axios.post(`https://localhost:7282/api/BloodInventory/AddDonationToInventory/${donationId}`);
+    return axios.post(`https://bloodlinecdac-aya6f2gja8emghg2.canadacentral-01.azurewebsites.net/api/BloodInventory/AddDonationToInventory/${donationId}`);
 };

@@ -3,14 +3,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { registerUser } from '../Services/RegisterService';
-import { getAllStates, getDistrictsByState } from '../Services/LocationService'; // using same service as AddUser
+import { getAllStates, getDistrictsByState } from '../Services/LocationService';
 
 function Register() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     phone: '',
-    aadhaarNumber: '',           
+    aadhaarNumber: '',
     gender: '',
     dob: '',
     bloodGroup: '',
@@ -27,23 +27,41 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [apiError, setApiError] = useState('');
-
   const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [selectedStateId, setSelectedStateId] = useState(null);
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'Bombay Blood'];
 
+  // ✅ Fetch states safely
   useEffect(() => {
     getAllStates()
-      .then((res) => setStates(res))
+      .then((res) => {
+        console.log("States API response:", res);
+        if (Array.isArray(res)) {
+          setStates(res);
+        } else if (Array.isArray(res.states)) {
+          setStates(res.states);
+        } else {
+          setStates([]);
+        }
+      })
       .catch((err) => console.error('Error fetching states', err));
   }, []);
 
+  // ✅ Fetch districts for selected state
   useEffect(() => {
     if (selectedStateId) {
       getDistrictsByState(selectedStateId)
-        .then((res) => setDistricts(res))
+        .then((res) => {
+          if (Array.isArray(res)) {
+            setDistricts(res);
+          } else if (Array.isArray(res.districts)) {
+            setDistricts(res.districts);
+          } else {
+            setDistricts([]);
+          }
+        })
         .catch((err) => console.error('Error fetching districts', err));
     } else {
       setDistricts([]);
@@ -52,11 +70,11 @@ function Register() {
 
   const validateForm = () => {
     const newErrors = {};
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8}$/; // exactly 8 chars, one uppercase, number, special char
-    const phoneRegex = /^[0-9]{10}$/; // only 10 digits
-    const aadhaarNumberRegex = /^[0-9]{12}$/; // exactly 12 digits
-    const pincodeRegex = /^[0-9]{6}$/; // only 6 digits
-    const emailRegex = /^[a-z0-9]+@[a-z0-9]+\.(com)$/; // lowercase, digits, must end with .com
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    const aadhaarNumberRegex = /^[0-9]{12}$/;
+    const pincodeRegex = /^[0-9]{6}$/;
+    const emailRegex = /^[a-z0-9]+@[a-z0-9]+\.(com)$/;
 
     if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required';
     if (!formData.email.trim()) {
@@ -72,9 +90,9 @@ function Register() {
     }
 
     if (!formData.aadhaarNumber.trim()) {
-      newErrors.aadhaarNumber = 'aadhaarNumber Number is required';
+      newErrors.aadhaarNumber = 'Aadhaar Number is required';
     } else if (!aadhaarNumberRegex.test(formData.aadhaarNumber)) {
-      newErrors.aadhaarNumber = 'aadhaarNumber Number must be exactly 12 digits';
+      newErrors.aadhaarNumber = 'Aadhaar Number must be exactly 12 digits';
     }
 
     if (!formData.gender) newErrors.gender = 'Gender is required';
@@ -89,7 +107,7 @@ function Register() {
     }
 
     if (!formData.password || !passwordRegex.test(formData.password)) {
-      newErrors.password = 'Password must contain 1 capital letter, 1 number, 1 special char, and be exactly 8 characters';
+      newErrors.password = 'Password must contain 1 capital letter, 1 number, 1 special char, and be 8 or more characters';
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
@@ -114,21 +132,18 @@ function Register() {
     }
 
     if (name === 'phone') {
-      // Only digits, max length 10
       const onlyNums = value.replace(/[^0-9]/g, '').slice(0, 10);
       setFormData((prev) => ({ ...prev, phone: onlyNums }));
       return;
     }
 
     if (name === 'aadhaarNumber') {
-      // Only digits, max length 12
       const onlyNums = value.replace(/[^0-9]/g, '').slice(0, 12);
       setFormData((prev) => ({ ...prev, aadhaarNumber: onlyNums }));
       return;
     }
 
     if (name === 'email') {
-      // only lowercase letters, numbers, @ and .
       const val = value.replace(/[^a-z0-9@.]/g, '');
       setFormData({ ...formData, email: val });
       return;
@@ -155,7 +170,7 @@ function Register() {
 
     if (Object.keys(formValidationErrors).length === 0) {
       try {
-        console.log('Submitting formData:', formData);  // <-- Add this
+        console.log('Submitting formData:', formData);
         await registerUser(formData);
         toast.success('Registration Successful!');
         setFormData({
@@ -197,17 +212,19 @@ function Register() {
               {apiError && <Alert variant="danger">{apiError}</Alert>}
 
               <Form onSubmit={handleSubmit}>
-                <Row>
-                  <Form.Group className="mb-4">
-                    <Form.Label>Role*</Form.Label>
-                    <Form.Select name="role" value={formData.role} onChange={handleChange} isInvalid={!!errors.role}>
-                      <option value="">-- Select Role --</option>
-                      <option value="Donor">Donor</option>
-                      <option value="Receiver">Receiver</option>
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
-                  </Form.Group>
+                {/* Role */}
+                <Form.Group className="mb-4">
+                  <Form.Label>Role*</Form.Label>
+                  <Form.Select name="role" value={formData.role} onChange={handleChange} isInvalid={!!errors.role}>
+                    <option value="">-- Select Role --</option>
+                    <option value="Donor">Donor</option>
+                    <option value="Receiver">Receiver</option>
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">{errors.role}</Form.Control.Feedback>
+                </Form.Group>
 
+                {/* Name & Email */}
+                <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Full Name*</Form.Label>
@@ -215,57 +232,34 @@ function Register() {
                       <Form.Control.Feedback type="invalid">{errors.fullName}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Email*</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        isInvalid={!!errors.email}
-                      />
+                      <Form.Control type="text" name="email" value={formData.email} onChange={handleChange} isInvalid={!!errors.email} />
                       <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
 
+                {/* Phone & Aadhaar */}
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Phone Number*</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="phone"
-                        value={formData.phone}
-                        maxLength={10}
-                        onChange={handleChange}
-                        isInvalid={!!errors.phone}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.phone}
-                      </Form.Control.Feedback>
+                      <Form.Control type="text" name="phone" value={formData.phone} maxLength={10} onChange={handleChange} isInvalid={!!errors.phone} />
+                      <Form.Control.Feedback type="invalid">{errors.phone}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-
-                  {/* Added aadhaarNumber Number field here */}
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Aadhaar Number*</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="aadhaarNumber"
-                        value={formData.aadhaarNumber}
-                        maxLength={12}
-                        onChange={handleChange}
-                        isInvalid={!!errors.aadhaarNumber}
-                      />
+                      <Form.Control type="text" name="aadhaarNumber" value={formData.aadhaarNumber} maxLength={12} onChange={handleChange} isInvalid={!!errors.aadhaarNumber} />
                       <Form.Control.Feedback type="invalid">{errors.aadhaarNumber}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
 
+                {/* Gender & DOB */}
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
@@ -279,7 +273,6 @@ function Register() {
                       <Form.Control.Feedback type="invalid">{errors.gender}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Date of Birth*</Form.Label>
@@ -289,110 +282,84 @@ function Register() {
                   </Col>
                 </Row>
 
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Blood Group*</Form.Label>
-                      <Form.Select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} isInvalid={!!errors.bloodGroup}>
-                        <option value="">-- Select Blood Group --</option>
-                        {bloodGroups.map((group) => (
-                          <option key={group}>{group}</option>
-                        ))}
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">{errors.bloodGroup}</Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                </Row>
+                {/* Blood Group */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Blood Group*</Form.Label>
+                  <Form.Select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} isInvalid={!!errors.bloodGroup}>
+                    <option value="">-- Select Blood Group --</option>
+                    {bloodGroups.map((group) => (
+                      <option key={group}>{group}</option>
+                    ))}
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">{errors.bloodGroup}</Form.Control.Feedback>
+                </Form.Group>
 
+                {/* Address */}
                 <Form.Group className="mb-3">
                   <Form.Label>Address</Form.Label>
                   <Form.Control as="textarea" name="address" rows={2} value={formData.address} onChange={handleChange} />
                 </Form.Group>
 
+                {/* State, District, City */}
                 <Row>
                   <Col md={4}>
                     <Form.Group className="mb-3">
                       <Form.Label>State</Form.Label>
                       <Form.Select name="state" value={formData.state} onChange={handleChange}>
                         <option value="">-- Select State --</option>
-                        {states.map((state) => (
-                          <option key={state.stateId} value={state.stateName}>
-                            {state.stateName}
-                          </option>
-                        ))}
+                        {Array.isArray(states) &&
+                          states.map((state) => (
+                            <option key={state.stateId} value={state.stateName}>
+                              {state.stateName}
+                            </option>
+                          ))}
                       </Form.Select>
                     </Form.Group>
                   </Col>
-
                   <Col md={4}>
                     <Form.Group className="mb-3">
                       <Form.Label>District</Form.Label>
                       <Form.Select name="district" value={formData.district} onChange={handleChange} disabled={!formData.state}>
                         <option value="">-- Select District --</option>
-                        {districts.map((district) => (
-                          <option key={district.districtId} value={district.districtName}>
-                            {district.districtName}
-                          </option>
-                        ))}
+                        {Array.isArray(districts) &&
+                          districts.map((district) => (
+                            <option key={district.districtId} value={district.districtName}>
+                              {district.districtName}
+                            </option>
+                          ))}
                       </Form.Select>
                     </Form.Group>
                   </Col>
-
                   <Col md={4}>
                     <Form.Group className="mb-3">
                       <Form.Label>City</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleChange}
-                      />
+                      <Form.Control type="text" name="city" value={formData.city} onChange={handleChange} />
                     </Form.Group>
                   </Col>
                 </Row>
 
+                {/* Pincode & Password */}
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Pincode</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="pincode"
-                        value={formData.pincode}
-                        maxLength={6}
-                        onChange={handleChange}
-                        isInvalid={!!errors.pincode}
-                      />
+                      <Form.Control type="text" name="pincode" value={formData.pincode} maxLength={6} onChange={handleChange} isInvalid={!!errors.pincode} />
                       <Form.Control.Feedback type="invalid">{errors.pincode}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
-
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Password*</Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        maxLength={8}
-                        onChange={handleChange}
-                        isInvalid={!!errors.password}
-                      />
+                      <Form.Control type="password" name="password" value={formData.password} maxLength={8} onChange={handleChange} isInvalid={!!errors.password} />
                       <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
 
+                {/* Confirm Password */}
                 <Form.Group className="mb-3">
                   <Form.Label>Confirm Password*</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    maxLength={8}
-                    onChange={handleChange}
-                    isInvalid={!!errors.confirmPassword}
-                  />
+                  <Form.Control type="password" name="confirmPassword" value={formData.confirmPassword} maxLength={8} onChange={handleChange} isInvalid={!!errors.confirmPassword} />
                   <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
                 </Form.Group>
 
